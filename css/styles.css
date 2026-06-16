@@ -301,6 +301,21 @@ img { max-width: 100%; display: block; }
 }
 .fodmap-note::before { content: "🌿 "; }
 
+/* riquadro "Trucchi" a scomparsa (chiuso di default) */
+.tips {
+  margin-top: 16px; background: #fff6e9; border: 1px solid #ffd9a8;
+  border-radius: var(--radius-sm); overflow: hidden;
+}
+.tips summary {
+  cursor: pointer; list-style: none; font-weight: 800; font-size: 15px;
+  color: #b45309; padding: 13px 15px; display: flex; align-items: center; gap: 6px;
+}
+.tips summary::-webkit-details-marker { display: none; }
+.tips summary::after { content: "⌄"; margin-left: auto; font-size: 18px; transition: transform 0.15s ease; }
+.tips[open] summary::after { transform: rotate(180deg); }
+.tips ul { margin: 0; padding: 0 18px 12px 34px; }
+.tips li { margin: 7px 0; font-size: 14.5px; line-height: 1.5; color: #6b4a2e; }
+
 /* ---------------- Buttons ---------------- */
 .btn {
   background: var(--card); border: 1px solid var(--line); box-shadow: var(--shadow);

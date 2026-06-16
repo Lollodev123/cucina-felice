@@ -47,14 +47,21 @@ window.SEED_RECIPES = [
       { name: "Sale e pepe", qty: "q.b.", emoji: "🧂" }
     ],
     steps: [
-      { text: "Accendi il forno a 200°C.", emoji: "🔥" },
-      { text: "Taglia patate e peperoni a pezzi grossi.", emoji: "🔪" },
-      { text: "Metti tutto in teglia con olio all'aglio, rosmarino, sale e pepe.", emoji: "🥣" },
-      { text: "Inforna 30 minuti, gira a metà cottura.", emoji: "⏲️", timerMin: 30 },
-      { text: "Spremi mezzo limone sopra e servi caldo.", emoji: "🍋" }
+      { text: "Accendi il forno a 200°C (statico) e fallo scaldare mentre prepari.", emoji: "🔥" },
+      { text: "Taglia le patate a spicchi e i peperoni a falde larghe (2-3 cm), togliendo semi e filamenti bianchi.", emoji: "🔪" },
+      { text: "Metti tutto in una teglia con olio all'aglio, rosmarino, sale e pepe; mescola con le mani per ungere bene.", emoji: "🥣" },
+      { text: "Inforna 30 minuti; a metà (dopo 15 min) apri e gira tutto con una paletta, così si dora in modo uniforme.", emoji: "⏲️", timerMin: 30 },
+      { text: "È pronto quando le patate sono dorate e il pollo, bucato vicino all'osso, non rilascia più liquido rosato. Spremi il limone e servi.", emoji: "🍋" }
     ],
     finalEmoji: "🍽️",
-    lowFodmap: "Niente aglio/cipolla: usa olio EVO infuso all'aglio (si toglie lo spicchio). Pollo, patate e peperoni sono low-FODMAP. Senza lattosio."
+    lowFodmap: "Niente aglio/cipolla: usa olio EVO infuso all'aglio (si toglie lo spicchio). Pollo, patate e peperoni sono low-FODMAP. Senza lattosio.",
+    tips: [
+      "Olio \"all'aglio infuso\": scalda 3-4 cucchiai d'olio con uno spicchio d'aglio schiacciato per 2 minuti, poi togli l'aglio. Dà profumo senza i FODMAP.",
+      "Taglia tutto a pezzi simili (2-3 cm): così cuoce tutto insieme. Pezzi troppo diversi cuociono male.",
+      "Come capisci che il pollo è cotto: il succo che esce è trasparente, non rosato. Nel dubbio, 5 minuti in più non lo rovinano.",
+      "Metti la carta forno sotto: teglia più facile da lavare e niente attaccature.",
+      "\"q.b.\" vuol dire \"quanto basta\": parti con poco sale, assaggia e aggiusta."
+    ]
   },
   {
     id: "salmone-zucchine-patate",
@@ -76,14 +83,21 @@ window.SEED_RECIPES = [
       { name: "Sale e pepe", qty: "q.b.", emoji: "🧂" }
     ],
     steps: [
-      { text: "Forno a 200°C. Taglia patate a fettine e zucchine a rondelle.", emoji: "🔪" },
-      { text: "Distribuiscile in teglia con olio e sale, inforna 15 minuti.", emoji: "⏲️", timerMin: 15 },
-      { text: "Adagia il salmone sopra le verdure, fette di limone sopra.", emoji: "🍋" },
-      { text: "Rimetti in forno 12-15 minuti finché il salmone è cotto.", emoji: "⏲️", timerMin: 13 },
-      { text: "Pepe macinato fresco e servi.", emoji: "🍽️" }
+      { text: "Accendi il forno a 200°C. Taglia le patate a fettine sottili (~½ cm) e le zucchine a rondelle.", emoji: "🔪" },
+      { text: "Distribuisci patate e zucchine in teglia con olio e sale in un solo strato; inforna 15 minuti (le patate partono prima perché ci mettono di più).", emoji: "⏲️", timerMin: 15 },
+      { text: "Adagia i filetti di salmone sopra le verdure, con la pelle sotto, e metti 2-3 fette di limone sopra.", emoji: "🍋" },
+      { text: "Rimetti in forno 12-15 minuti: il salmone è cotto quando diventa opaco e si sfalda spingendo con la forchetta.", emoji: "⏲️", timerMin: 13 },
+      { text: "Macina pepe fresco e servi.", emoji: "🍽️" }
     ],
     finalEmoji: "🍽️",
-    lowFodmap: "Salmone, patate e zucchine (porzione ≤ ½ tazza) sono low-FODMAP. Niente latticini, niente aglio/cipolla."
+    lowFodmap: "Salmone, patate e zucchine (porzione ≤ ½ tazza) sono low-FODMAP. Niente latticini, niente aglio/cipolla.",
+    tips: [
+      "Come capisci che il salmone è cotto: da lucido e \"vetroso\" diventa opaco e rosa chiaro, e si apre a scaglie con la forchetta. Meglio appena al cuore che stracotto e secco.",
+      "Le patate ci mettono più del pesce: per questo vanno in forno 15 minuti prima.",
+      "Pelle sotto: protegge la polpa e si stacca facilmente dopo la cottura.",
+      "Fettine sottili e in un solo strato = cottura uniforme; ammucchiate restano crude.",
+      "Niente bilancia: una porzione di salmone è grande come il palmo della mano."
+    ]
   },
   {
     id: "branzino-pomodorini-patate",
@@ -278,14 +292,21 @@ window.SEED_RECIPES = [
       { name: "Limone", qty: "½", emoji: "🍋" }
     ],
     steps: [
-      { text: "Lessa il riso in acqua salata.", emoji: "🍚", timerMin: 12 },
-      { text: "Scalda l'olio all'aglio in padella a fiamma viva.", emoji: "🔥" },
-      { text: "Salta gli straccetti 3-4 minuti, sale e pepe.", emoji: "🍳", timerMin: 4 },
-      { text: "Spegni, unisci la rucola e falla appassire col calore.", emoji: "🌿" },
-      { text: "Servi sul riso con scaglie di grana e limone.", emoji: "🍋" }
+      { text: "Lessa il riso in acqua salata per il tempo sulla confezione, poi scolalo.", emoji: "🍚", timerMin: 12 },
+      { text: "Scalda l'olio all'aglio in una padella larga a fuoco ALTO finché è ben caldo (l'olio luccica).", emoji: "🔥" },
+      { text: "Butta gli straccetti in un solo strato e salta 3-4 minuti a fuoco vivo, mescolando: devono dorarsi in fretta, non bollire.", emoji: "🍳", timerMin: 4 },
+      { text: "Spegni il fuoco, sala, pepa, unisci la rucola e mescola: il calore la fa appassire appena.", emoji: "🌿" },
+      { text: "Servi sul riso con scaglie di grana e una spremuta di limone.", emoji: "🍋" }
     ],
     finalEmoji: "🍽️",
-    lowFodmap: "Rucola in porzione, riso e manzo low-FODMAP. Olio all'aglio infuso al posto dell'aglio."
+    lowFodmap: "Rucola in porzione, riso e manzo low-FODMAP. Olio all'aglio infuso al posto dell'aglio.",
+    tips: [
+      "\"Straccetti\" = fettine di manzo tagliate a striscioline sottili; cuociono in pochissimo.",
+      "Fuoco ALTO e padella ben calda = carne dorata e morbida. Fuoco basso = carne grigia e dura.",
+      "Non ammucchiare la carne: se è tanta, falla in due volte, altrimenti \"bolle\" invece di rosolare.",
+      "Sala a fine cottura: il sale prima fa uscire i liquidi e indurisce la carne.",
+      "Sono velocissimi: 4 minuti bastano, non cuocerli troppo o diventano stopposi."
+    ]
   },
   {
     id: "tacchino-limone-zucchine-polenta",
@@ -506,14 +527,21 @@ window.SEED_RECIPES = [
       { name: "Pepe nero", qty: "abbondante", emoji: "⚫" }
     ],
     steps: [
-      { text: "Cuoci la pasta, tieni da parte l'acqua di cottura.", emoji: "🍝", timerMin: 9 },
-      { text: "Tosta il pepe in padella, aggiungi un mestolo di acqua di cottura.", emoji: "⚫" },
-      { text: "Mescola il pecorino con poca acqua tiepida fino a crema (no grumi).", emoji: "🧀" },
-      { text: "Cuoci un uovo all'occhio e salta gli spinaci a parte.", emoji: "🍳", timerMin: 4 },
-      { text: "Manteca la pasta col pecorino, servi con spinaci e uovo sopra.", emoji: "🍽️" }
+      { text: "Cuoci la pasta in acqua bollente salata 1 minuto in meno del tempo sulla confezione; tieni da parte una tazza di acqua di cottura.", emoji: "🍝", timerMin: 9 },
+      { text: "In una padella larga tosta il pepe a fuoco medio per 30 secondi (finché profuma), poi aggiungi un mestolo di acqua di cottura.", emoji: "⚫" },
+      { text: "In una ciotola mescola il pecorino con poca acqua TIEPIDA (non bollente) fino a una crema liscia, senza grumi.", emoji: "🧀" },
+      { text: "A parte cuoci un uovo all'occhio e salta gli spinaci con un filo d'olio, 3 minuti.", emoji: "🍳", timerMin: 4 },
+      { text: "Spegni il fuoco, butta la pasta nella padella col pepe, unisci la crema di pecorino e manteca mescolando veloce (acqua se serve). Servi con spinaci e uovo sopra.", emoji: "🍽️" }
     ],
     finalEmoji: "🍽️",
-    lowFodmap: "Pecorino stagionato = lattosio bassissimo. Usa porzione di pasta low-FODMAP (~75 g a testa) o pasta senza glutine. Spinaci ok."
+    lowFodmap: "Pecorino stagionato = lattosio bassissimo. Usa porzione di pasta low-FODMAP (~75 g a testa) o pasta senza glutine. Spinaci ok.",
+    tips: [
+      "\"Mantecare\" = mescolare energicamente FUORI dal fuoco per legare formaggio e acqua in una cremina.",
+      "Trucco anti-grumi: il pecorino non va sul fuoco diretto né con acqua bollente, o fila e si impallina. Acqua tiepida + fuoco spento.",
+      "L'acqua di cottura è preziosa: l'amido rende tutto cremoso. Tienine sempre una tazza prima di scolare.",
+      "Troppo denso? Aggiungi un cucchiaio di acqua di cottura per volta. Troppo liquido? Altro pecorino.",
+      "\"Uovo all'occhio\" = uovo fritto col tuorlo morbido; rompendolo fa altra cremina."
+    ]
   },
   {
     id: "gricia-zucchine",
@@ -563,14 +591,21 @@ window.SEED_RECIPES = [
       { name: "Brodo vegetale senza cipolla/aglio", qty: "1 L", emoji: "🥣" }
     ],
     steps: [
-      { text: "Rosola pollo e zucchine a dadini con olio.", emoji: "🍳", timerMin: 5 },
-      { text: "Tosta il riso 2 minuti, poi aggiungi brodo poco per volta.", emoji: "🍚", timerMin: 2 },
-      { text: "Cuoci mescolando, sciogli lo zafferano a metà cottura.", emoji: "🟡", timerMin: 16 },
-      { text: "A fine cottura manteca con grana.", emoji: "🧀" },
-      { text: "Fai riposare 1 minuto e servi cremoso.", emoji: "🍽️" }
+      { text: "Scalda il brodo a parte e tienilo caldo. In una casseruola rosola pollo e zucchine a dadini con un filo d'olio, 5 minuti.", emoji: "🍳", timerMin: 5 },
+      { text: "Versa il riso e tostalo 2 minuti mescolando, finché i chicchi diventano un po' trasparenti ai bordi.", emoji: "🍚", timerMin: 2 },
+      { text: "Aggiungi il brodo caldo un mestolo per volta: aspetta che venga assorbito prima del successivo, mescolando spesso. Vai avanti ~16 minuti.", emoji: "🟡", timerMin: 16 },
+      { text: "A metà cottura sciogli lo zafferano in un mestolo di brodo e uniscilo. Assaggia: pronto quando è morbido ma ancora sodo al centro.", emoji: "🥄" },
+      { text: "Spegni, aggiungi grana e un filo d'olio e manteca mescolando. Riposa 1 minuto e servi cremoso (\"all'onda\").", emoji: "🍽️" }
     ],
     finalEmoji: "🍽️",
-    lowFodmap: "Usa brodo SENZA cipolla e aglio (fatto in casa o dado low-FODMAP). Grana senza lattosio, zucchine in porzione."
+    lowFodmap: "Usa brodo SENZA cipolla e aglio (fatto in casa o dado low-FODMAP). Grana senza lattosio, zucchine in porzione.",
+    tips: [
+      "Brodo low-FODMAP veloce: acqua con carota, sedano e un po' di sale, niente cipolla/aglio (o un dado certificato low-FODMAP).",
+      "\"Tostare\" il riso = scaldarlo nell'unto 1-2 minuti prima del brodo: tiene meglio la cottura.",
+      "Brodo SEMPRE caldo e poco per volta: se lo metti freddo o tutto insieme, il risotto si slega.",
+      "Mescola spesso ma non di continuo; assaggia un chicco dopo 14-15 minuti per regolarti.",
+      "\"All'onda\" = cremoso: inclinando la pentola fa un'onda morbida. Se è asciutto, aggiungi un altro mestolo di brodo."
+    ]
   },
   {
     id: "pasta-pomodoro-tonno-rucola",
@@ -736,14 +771,21 @@ window.SEED_RECIPES = [
       { name: "Olio EVO", qty: "2 cucchiai", emoji: "🫒" }
     ],
     steps: [
-      { text: "Lessa patate e fagiolini insieme finché morbidi.", emoji: "🥔", timerMin: 15 },
-      { text: "Cuoci l'orata in padella con olio, 3-4 min per lato.", emoji: "🐠", timerMin: 7 },
-      { text: "Condisci le verdure con olio, sale e limone.", emoji: "🍋" },
-      { text: "Sistema tutto nel piatto.", emoji: "🥣" },
+      { text: "Lessa le patate a tocchetti e i fagiolini in acqua salata finché sono morbidi (li infili con la forchetta senza sforzo), ~15 minuti.", emoji: "🥔", timerMin: 15 },
+      { text: "Scalda un filo d'olio in padella a fuoco medio e cuoci i filetti di orata 3-4 minuti per lato, dal lato pelle prima.", emoji: "🐠", timerMin: 7 },
+      { text: "Condisci patate e fagiolini con olio, sale e un po' di limone.", emoji: "🍋" },
+      { text: "Sistema verdure e orata nel piatto (l'orata è pronta quando la polpa è bianca e si sfalda).", emoji: "🥣" },
       { text: "Filo d'olio a crudo e servi.", emoji: "🍽️" }
     ],
     finalEmoji: "🍽️",
-    lowFodmap: "Fagiolini, patate, orata low-FODMAP. Niente aglio/cipolla, niente latticini."
+    lowFodmap: "Fagiolini, patate, orata low-FODMAP. Niente aglio/cipolla, niente latticini.",
+    tips: [
+      "Verdure cotte = la forchetta entra senza sforzo. Se fa resistenza, ancora qualche minuto.",
+      "Chiedi al pescivendolo i filetti già puliti dalle lische: zero pensieri.",
+      "Pesce cotto: la polpa passa da trasparente a bianca opaca e si stacca a scaglie. Pochi minuti, non di più.",
+      "Cuoci prima dal lato pelle: tiene insieme il filetto e viene più croccante.",
+      "Padella già calda prima di metterci il pesce, così non si attacca."
+    ]
   },
   {
     id: "tonno-scottato-riso-peperoni",
@@ -937,14 +979,21 @@ window.SEED_RECIPES = [
       { name: "Grana", qty: "2 cucchiai", emoji: "🧀" }
     ],
     steps: [
-      { text: "Salta zucchine e patate a fette in padella, 5 minuti.", emoji: "🥒", timerMin: 5 },
-      { text: "Versa le uova sbattute con grana e sale.", emoji: "🥣" },
-      { text: "Cuoci 4 minuti, gira e cuoci altri 3.", emoji: "🍳", timerMin: 7 },
-      { text: "Condisci l'insalata con olio e sale.", emoji: "🥗" },
-      { text: "Servi la frittata a spicchi con l'insalata.", emoji: "🍽️" }
+      { text: "In una padella antiaderente (~24 cm) salta zucchine a rondelle e patate già lesse a fette con un filo d'olio, 5 minuti.", emoji: "🥒", timerMin: 5 },
+      { text: "Sbatti le uova in una ciotola con grana e un pizzico di sale, poi versale in padella sopra le verdure.", emoji: "🥣" },
+      { text: "Cuoci a fuoco medio-basso 4 minuti finché i bordi si rapprendono e la base è dorata (solleva con la paletta per controllare).", emoji: "🍳", timerMin: 7 },
+      { text: "Gira con l'aiuto di un piatto (coprila, capovolgi, falla riscivolare in padella) e cuoci altri 3 minuti.", emoji: "🔄" },
+      { text: "Condisci l'insalata con olio e sale e servi la frittata a spicchi.", emoji: "🍽️" }
     ],
     finalEmoji: "🍽️",
-    lowFodmap: "Grana senza lattosio, lattuga e zucchine in porzione, patate ok."
+    lowFodmap: "Grana senza lattosio, lattuga e zucchine in porzione, patate ok.",
+    tips: [
+      "Quando girarla: i bordi sono sodi e, scuotendo la padella, la frittata scivola tutta insieme. La base dev'essere dorata.",
+      "Il trucco del piatto: appoggia un piatto sopra la padella, capovolgi, poi fai scivolare la frittata dal piatto in padella per l'altro lato. Niente panico.",
+      "Padella antiaderente + filo d'olio = non si attacca. Fuoco medio-basso, non alto, o brucia fuori e resta cruda dentro.",
+      "Patate già lesse: usa gli avanzi del giorno prima o lessale 15 min prima. Risparmi tempo.",
+      "Zero rischio? Finiscila in forno a 180°C per 5 minuti invece di girarla."
+    ]
   },
   {
     id: "uova-purgatorio-polenta-spinaci",
@@ -1703,14 +1752,21 @@ window.SEED_RECIPES = [
       { name: "Olio EVO + limone", qty: "q.b.", emoji: "🍋" }
     ],
     steps: [
-      { text: "Sciacqua e lessa la quinoa, 15 minuti.", emoji: "🌾", timerMin: 15 },
-      { text: "Griglia il petto di pollo, 4 min per lato.", emoji: "🍗", timerMin: 8 },
-      { text: "Taglia insalata e pomodorini.", emoji: "🔪" },
-      { text: "Condisci tutto con olio, limone e sale.", emoji: "🍋" },
-      { text: "Affetta il pollo e componi il piatto.", emoji: "🍽️" }
+      { text: "Sciacqua la quinoa sotto l'acqua corrente (toglie l'amaro), poi lessala 15 minuti in acqua salata e scolala.", emoji: "🌾", timerMin: 15 },
+      { text: "Batti leggermente il petto di pollo per pareggiarlo, salalo e cuocilo su griglia/padella ben calda 4 minuti per lato.", emoji: "🍗", timerMin: 8 },
+      { text: "Intanto taglia l'insalata e i pomodorini.", emoji: "🔪" },
+      { text: "Condisci quinoa e verdure con olio, limone e sale.", emoji: "🍋" },
+      { text: "Fai riposare il pollo 2 minuti, affettalo e componi il piatto (è cotto quando il succo è trasparente).", emoji: "🍽️" }
     ],
     finalEmoji: "🥗",
-    lowFodmap: "Quinoa, lattuga e pomodorini in porzione, pollo low-FODMAP. Senza latticini, senza aglio/cipolla."
+    lowFodmap: "Quinoa, lattuga e pomodorini in porzione, pollo low-FODMAP. Senza latticini, senza aglio/cipolla.",
+    tips: [
+      "Sciacquare la quinoa toglie la saponina, che la rende amara. 30 secondi sotto il rubinetto bastano.",
+      "Batti il petto a spessore uniforme (tra due fogli di carta forno): cuoce in modo omogeneo e resta morbido.",
+      "Pollo cotto: il succo che esce è trasparente, non rosato. Nel dubbio, 1-2 minuti in più.",
+      "Far riposare la carne 2 minuti prima di tagliarla la mantiene succosa.",
+      "Per renderla ancora più \"fit\": poco olio e tanto limone, e aggiungi cetriolo o carote crude."
+    ]
   },
   {
     id: "salmone-vapore-patate-spinaci",

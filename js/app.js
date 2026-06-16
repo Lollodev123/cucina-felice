@@ -276,6 +276,10 @@
     }).join("") + "</div>";
 
     var fodmap = r.lowFodmap ? '<div class="fodmap-note">' + esc(r.lowFodmap) + "</div>" : "";
+    var tips = (r.tips && r.tips.length) ?
+      '<details class="tips"><summary>💡 Trucchi per chi non è bravo in cucina</summary><ul>' +
+      r.tips.map(function (t) { return "<li>" + esc(t) + "</li>"; }).join("") +
+      "</ul></details>" : "";
 
     return '' +
       '<button class="back" id="btn-back">← Tutte le ricette</button>' +
@@ -296,6 +300,7 @@
       '<div class="section-title">📖 La storia, passo passo</div>' +
       '<p style="color:var(--ink-soft);font-size:13px;margin:-4px 0 10px">Spunta i passi mentre cucini e avvia i timer. 👇</p>' +
       steps +
+      tips +
       '<div class="section-title">🎉 Il finale</div>' +
       '<div class="final" id="final"></div>' +
       fodmap;
