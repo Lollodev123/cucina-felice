@@ -1,7 +1,7 @@
 /* Service worker — rende l'app installabile e utilizzabile offline.
    Strategia: NETWORK-FIRST per i file dell'app (online = sempre aggiornata),
    con fallback alla cache quando si è offline. */
-const CACHE = "cucina-felice-v4";
+const CACHE = "cucina-felice-v5";
 const ASSETS = [
   "./",
   "index.html",
@@ -14,6 +14,8 @@ const ASSETS = [
   "data/recipes.js",
   "data/recipes-extra.js",
   "manifest.webmanifest",
+  "assets/favicon.svg",
+  "assets/icon-180.png",
   "assets/icon-192.png",
   "assets/icon-512.png"
 ];

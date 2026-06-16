@@ -1,4 +1,4 @@
-# 🍅 Cucina Felice — ricette low-FODMAP
+# 🫐 Cucina Felice — ricette low-FODMAP
 
 App semplice e colorata con **oltre 100 ricette italiane** (molte romane), tra cui
 **frullatini 🥤** e **merende dolci e salate 🍪**, ognuna (i piatti) con una
