@@ -91,67 +91,99 @@
     };
   }
 
+  function escAttr(s) {
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;").replace(/"/g, "&quot;")
+      .replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+  function pick(v, d) { return (v === undefined || v === null) ? d : v; }
+
   function field(label, name, value, opts) {
     opts = opts || {};
     var hint = opts.hint ? '<div class="field__hint">' + opts.hint + "</div>" : "";
+    var v = escAttr(value);
     var input;
     if (opts.area) {
       input = '<textarea name="' + name + '" rows="' + (opts.rows || 3) + '" placeholder="' +
-        (opts.ph || "") + '">' + (value || "") + "</textarea>";
+        (opts.ph || "") + '">' + v + "</textarea>";
     } else {
-      input = '<input name="' + name + '" value="' + (value || "") + '" placeholder="' +
+      input = '<input name="' + name + '" value="' + v + '" placeholder="' +
         (opts.ph || "") + '"' + (opts.type ? ' type="' + opts.type + '"' : "") + ">";
     }
     return '<div class="field"><label>' + label + "</label>" + input + hint + "</div>";
   }
 
-  function openAdd(onSaved) {
-    var bg = document.createElement("div");
-    bg.className = "modal-bg";
-    bg.innerHTML =
-      '<div class="modal" role="dialog" aria-modal="true">' +
-        '<div class="modal__head"><h2>🍳 Aggiungi una ricetta</h2>' +
+  // dai i campi del form a partire da una ricetta esistente (per la modifica)
+  function prefillFrom(r) {
+    return {
+      title: r.title, emoji: r.emoji, timeMin: r.timeMin, story: r.story,
+      servings: r.servings, difficulty: r.difficulty,
+      proteinName: r.protein && r.protein.name, proteinEmoji: r.protein && r.protein.emoji,
+      carbName: r.carb && r.carb.name, carbEmoji: r.carb && r.carb.emoji,
+      veggieName: r.veggie && r.veggie.name, veggieEmoji: r.veggie && r.veggie.emoji,
+      ingredients: (r.ingredients || []).map(function (i) { return i.name + (i.qty ? " | " + i.qty : ""); }).join("\n"),
+      steps: (r.steps || []).map(function (s) {
+        return s.text + (s.timerMin && !/\d+\s*min/i.test(s.text) ? " (" + s.timerMin + " min)" : "");
+      }).join("\n"),
+      colors: (r.colors || []).join(", "),
+      aromas: (r.aromas || []).join(", "),
+      moods: (r.moods || []).join(", "),
+      lowFodmap: r.lowFodmap || ""
+    };
+  }
+
+  function formHTML(p, isEdit) {
+    p = p || {};
+    var diff = p.difficulty || "facile";
+    return '<div class="modal" role="dialog" aria-modal="true">' +
+        '<div class="modal__head"><h2>' + (isEdit ? "✏️ Modifica ricetta" : "🍳 Aggiungi una ricetta") + "</h2>" +
           '<button class="icon-btn" data-x>✕</button></div>' +
         '<form id="lf-form">' +
-          field("Titolo", "title", "", { ph: "Es. Pollo al limone con riso" }) +
+          field("Titolo", "title", pick(p.title, ""), { ph: "Es. Pollo al limone con riso" }) +
           '<div class="row2">' +
-            field("Emoji copertina", "emoji", "🍽️", { ph: "🍗" }) +
-            field("Tempo (minuti)", "timeMin", "20", { type: "number" }) +
+            field("Emoji copertina", "emoji", pick(p.emoji, "🍽️"), { ph: "🍗" }) +
+            field("Tempo (minuti)", "timeMin", pick(p.timeMin, "20"), { type: "number" }) +
           "</div>" +
-          field("La storia 💬", "story", "", { area: true, rows: 2, ph: "Una frase divertente o invitante sul piatto…" }) +
+          field("La storia 💬", "story", pick(p.story, ""), { area: true, rows: 2, ph: "Una frase divertente o invitante sul piatto…" }) +
           '<div class="row2">' +
-            field("Porzioni", "servings", "2", { type: "number" }) +
+            field("Porzioni", "servings", pick(p.servings, "2"), { type: "number" }) +
             '<div class="field"><label>Difficoltà</label><select name="difficulty">' +
-              '<option value="facilissima">facilissima</option><option value="facile" selected>facile</option>' +
+              '<option value="facilissima"' + (diff === "facilissima" ? " selected" : "") + ">facilissima</option>" +
+              '<option value="facile"' + (diff === "facile" ? " selected" : "") + ">facile</option>" +
             "</select></div>" +
           "</div>" +
           '<div class="section-title">🍗🥔🥬 Le 3 fonti del piatto</div>' +
           '<div class="row3">' +
-            field("Proteina", "proteinName", "", { ph: "Pollo" }) +
-            field("Carboidrato", "carbName", "", { ph: "Riso" }) +
-            field("Verdura", "veggieName", "", { ph: "Zucchine" }) +
+            field("Proteina", "proteinName", pick(p.proteinName, ""), { ph: "Pollo" }) +
+            field("Carboidrato", "carbName", pick(p.carbName, ""), { ph: "Riso" }) +
+            field("Verdura", "veggieName", pick(p.veggieName, ""), { ph: "Zucchine" }) +
           "</div>" +
           '<div class="row3">' +
-            field("Emoji", "proteinEmoji", "", { ph: "🍗" }) +
-            field("Emoji", "carbEmoji", "", { ph: "🍚" }) +
-            field("Emoji", "veggieEmoji", "", { ph: "🥒" }) +
+            field("Emoji", "proteinEmoji", pick(p.proteinEmoji, ""), { ph: "🍗" }) +
+            field("Emoji", "carbEmoji", pick(p.carbEmoji, ""), { ph: "🍚" }) +
+            field("Emoji", "veggieEmoji", pick(p.veggieEmoji, ""), { ph: "🥒" }) +
           "</div>" +
-          field("Ingredienti (uno per riga: nome | quantità)", "ingredients", "", {
-            area: true, rows: 4, ph: "Pollo | 300 g\nRiso | 160 g\nZucchine | 2\nLimone | 1"
+          field("Ingredienti (uno per riga: nome | quantità)", "ingredients", pick(p.ingredients, ""), {
+            area: true, rows: 5, ph: "Pollo | 300 g\nRiso | 160 g\nZucchine | 2\nLimone | 1"
           }) +
-          field("Passi (uno per riga — scrivi \"12 min\" per un timer)", "steps", "", {
-            area: true, rows: 4, ph: "Lessa il riso 12 min.\nRosola il pollo 6 min.\nServi con le zucchine."
+          field("Passi (uno per riga — scrivi \"12 min\" per un timer)", "steps", pick(p.steps, ""), {
+            area: true, rows: 5, ph: "Lessa il riso 12 min.\nRosola il pollo 6 min.\nServi con le zucchine."
           }) +
           '<div class="row3">' +
-            field("Colori", "colors", "", { ph: "giallo, verde" }) +
-            field("Profumi", "aromas", "", { ph: "limone" }) +
-            field("Voglia", "moods", "", { ph: "veloce, comfort" }) +
+            field("Colori", "colors", pick(p.colors, ""), { ph: "giallo, verde" }) +
+            field("Profumi", "aromas", pick(p.aromas, ""), { ph: "limone" }) +
+            field("Voglia", "moods", pick(p.moods, ""), { ph: "veloce, comfort" }) +
           "</div>" +
-          field("Nota low-FODMAP (facoltativa)", "lowFodmap", "", { area: true, rows: 2, ph: "Es. olio all'aglio infuso al posto dell'aglio." }) +
-          '<button type="submit" class="btn btn--primary btn--block btn--lg">✨ Salva la ricetta</button>' +
+          field("Nota low-FODMAP (facoltativa)", "lowFodmap", pick(p.lowFodmap, ""), { area: true, rows: 2, ph: "Es. olio all'aglio infuso al posto dell'aglio." }) +
+          '<button type="submit" class="btn btn--primary btn--block btn--lg">' + (isEdit ? "💾 Salva le modifiche" : "✨ Salva la ricetta") + "</button>" +
         "</form>" +
       "</div>";
+  }
 
+  function openForm(prefill, isEdit, existing, onSaved) {
+    var bg = document.createElement("div");
+    bg.className = "modal-bg";
+    bg.innerHTML = formHTML(prefill, isEdit);
     document.body.appendChild(bg);
     function close() { bg.remove(); }
     bg.addEventListener("click", function (e) { if (e.target === bg || e.target.hasAttribute("data-x")) close(); });
@@ -165,12 +197,22 @@
         return window.App.toast("Servono le 3 fonti: proteina, carbo e verdura 🍗🥔🥬");
       var recipe = buildRecipe(o);
       if (!recipe.steps.length) return window.App.toast("Aggiungi almeno un passo 👣");
+      if (isEdit && existing) {
+        // mantieni id e i campi non presenti nel form (così resta la "tua" versione)
+        recipe.id = existing.id;
+        recipe.region = existing.region || recipe.region;
+        if (existing.tips) recipe.tips = existing.tips;
+        if (existing.finalEmoji) recipe.finalEmoji = existing.finalEmoji;
+      }
       window.Store.saveUserRecipe(recipe);
       close();
-      window.App.toast("Ricetta salvata! 🎉");
+      window.App.toast(isEdit ? "Modifiche salvate! 💾" : "Ricetta salvata! 🎉");
       if (onSaved) onSaved(recipe);
     });
   }
+
+  function openAdd(onSaved) { openForm({}, false, null, onSaved); }
+  function openEdit(recipe, onSaved) { openForm(prefillFrom(recipe), true, recipe, onSaved); }
 
   /* ---------- export / import ---------- */
   function exportJSON() {
@@ -193,5 +235,5 @@
     reader.readAsText(file);
   }
 
-  window.RecipeForm = { openAdd: openAdd, exportJSON: exportJSON, importFromFile: importFromFile, guessEmoji: guessEmoji };
+  window.RecipeForm = { openAdd: openAdd, openEdit: openEdit, exportJSON: exportJSON, importFromFile: importFromFile, guessEmoji: guessEmoji };
 })();

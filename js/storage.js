@@ -188,6 +188,11 @@
     return getAllRecipes().filter(function (r) { return r.id === id; })[0] || null;
   }
 
+  // c'è una ricetta originale (dei file dati) con questo id?
+  function isSeedRecipe(id) {
+    return (window.SEED_RECIPES || []).some(function (r) { return r.id === id; });
+  }
+
   // Tutte le chiavi ingrediente presenti (per il pannello "escludi ingrediente").
   function allIngredientKeys() {
     var set = {};
@@ -253,7 +258,7 @@
     getChecks: getChecks, toggleCheck: toggleCheck, clearChecks: clearChecks,
     exportData: exportData, importData: importData,
     getAllRecipes: getAllRecipes, getVisibleRecipes: getVisibleRecipes,
-    getRecipeById: getRecipeById, allIngredientKeys: allIngredientKeys,
+    getRecipeById: getRecipeById, isSeedRecipe: isSeedRecipe, allIngredientKeys: allIngredientKeys,
     savePhoto: savePhoto, getPhoto: getPhoto, deletePhoto: deletePhoto
   };
 })();

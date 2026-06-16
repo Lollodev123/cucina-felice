@@ -292,7 +292,10 @@
       '<div class="detail__head">' +
         "<h1>" + esc(r.title) + "</h1>" +
         '<div class="detail__actions">' +
+          '<button class="icon-btn" id="d-edit" title="Modifica ricetta">✏️</button>' +
           '<button class="icon-btn" id="d-fav" title="Preferito">' + (fav ? "❤️" : "🤍") + "</button>" +
+          (Store.isUserRecipe(r.id) && Store.isSeedRecipe(r.id) ?
+            '<button class="icon-btn" id="d-restore" title="Ripristina originale">↩︎</button>' : "") +
           '<button class="icon-btn btn--danger" id="d-del" title="Elimina">🗑️</button>' +
         "</div>" +
       "</div>" +
@@ -366,6 +369,16 @@
       var on = Store.toggleFavorite(r.id);
       $("d-fav").textContent = on ? "❤️" : "🤍";
     });
+    $("d-edit").addEventListener("click", function () {
+      RecipeForm.openEdit(r, function () { showDetail(r.id); });
+    });
+    var restoreBtn = $("d-restore");
+    if (restoreBtn) restoreBtn.addEventListener("click", function () {
+      if (!confirm("Ripristinare la ricetta originale? Le tue modifiche andranno perse.")) return;
+      Store.deleteUserRecipe(r.id);
+      toast("Ricetta originale ripristinata ↩︎");
+      showDetail(r.id);
+    });
     $("d-del").addEventListener("click", function () { deleteRecipe(r); });
 
     // checklist
@@ -394,14 +407,15 @@
   }
 
   function deleteRecipe(r) {
-    if (Store.isUserRecipe(r.id)) {
+    if (Store.isSeedRecipe(r.id)) {
+      // ricetta originale (anche se l'hai modificata): la nascondi nel cestino
+      Store.hideRecipe(r.id);
+      toast("Ricetta nascosta. La trovi nel 🗑️ Cestino (Impostazioni).");
+    } else {
       if (!confirm("Eliminare definitivamente «" + r.title + "»? (è una tua ricetta)")) return;
       Store.deleteUserRecipe(r.id);
       Store.deletePhoto(r.id);
       toast("Ricetta eliminata");
-    } else {
-      Store.hideRecipe(r.id);
-      toast("Ricetta nascosta. La trovi nel 🗑️ Cestino (Impostazioni).");
     }
     location.hash = "#/";
   }
