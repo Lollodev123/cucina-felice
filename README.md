@@ -1,6 +1,7 @@
 # 🍅 Cucina Felice — ricette low-FODMAP
 
-App semplice e colorata con **62 ricette italiane** (molte romane), ognuna con una
+App semplice e colorata con **oltre 100 ricette italiane** (molte romane), tra cui
+**frullatini 🥤** e **merende dolci e salate 🍪**, ognuna (i piatti) con una
 **fonte di proteine + una di carboidrati + una di verdure**. Pensata per chi segue
 la dieta **low-FODMAP**: niente aglio/cipolla (si usa olio infuso all'aglio),
 **senza lattosio**, **pochi legumi**. Tutte facili, profumate e veloci — fatte apposta
@@ -11,7 +12,7 @@ per chi non ama cucinare e si annoia in fretta.
 
 ## ✨ Cosa puoi fare
 - 🎲 **Sorprendimi**: ti sceglie una ricetta a caso (basta con la paralisi da scelta).
-- ⚡ **Filtri rapidi** sempre in vista: Fit, Veloce, Mare, Comfort, Preferite.
+- ⚡ **Filtri rapidi** sempre in vista: 🥤 Frullati, 🍪 Merende, Fit, Veloce, Mare, Comfort, Preferite.
 - 🥗 Tante ricette **fit/leggere** (cerca il tag "fit").
 - 🔎 **Cerca** e filtra per **colore, profumo, voglia, tempo** (pannello completo col tasto 🎛️).
 - ❤️ Metti **like** alle ricette che ami (vengono spinte in cima e in "Sorprendimi").
@@ -71,7 +72,8 @@ js/filters.js         # ricerca, filtri, "Sorprendimi"
 js/timer.js           # timer dei passi
 js/form.js            # form "aggiungi ricetta" + export/import
 js/app.js             # cuore dell'app (navigazione, rendering)
-data/recipes.js       # le 62 ricette (modificabile a mano)
+data/recipes.js       # i piatti principali (modificabile a mano)
+data/recipes-extra.js # frullatini + merende + piatti con patata dolce/quinoa/avocado/ceci
 LOW_FODMAP.md         # le regole della dieta usate + avvertenze
 ```
 
