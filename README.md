@@ -1,16 +1,19 @@
 # 🍅 Cucina Felice — ricette low-FODMAP
 
-App semplice e colorata con **58 ricette italiane** (molte romane), ognuna con una
+App semplice e colorata con **62 ricette italiane** (molte romane), ognuna con una
 **fonte di proteine + una di carboidrati + una di verdure**. Pensata per chi segue
 la dieta **low-FODMAP**: niente aglio/cipolla (si usa olio infuso all'aglio),
 **senza lattosio**, **pochi legumi**. Tutte facili, profumate e veloci — fatte apposta
 per chi non ama cucinare e si annoia in fretta.
 
-👉 Funziona su **telefono e computer**, dallo stesso indirizzo.
+🔗 **Online:** <https://lollodev123.github.io/cucina-felice/> — aprila dal telefono e fai
+"Aggiungi a Home" per averla come **app installabile** (funziona anche offline).
 
 ## ✨ Cosa puoi fare
 - 🎲 **Sorprendimi**: ti sceglie una ricetta a caso (basta con la paralisi da scelta).
-- 🔎 **Cerca** e filtra per **colore, profumo, voglia del momento, tempo** e **preferite**.
+- ⚡ **Filtri rapidi** sempre in vista: Fit, Veloce, Mare, Comfort, Preferite.
+- 🥗 Tante ricette **fit/leggere** (cerca il tag "fit").
+- 🔎 **Cerca** e filtra per **colore, profumo, voglia, tempo** (pannello completo col tasto 🎛️).
 - ❤️ Metti **like** alle ricette che ami (vengono spinte in cima e in "Sorprendimi").
 - 👣 **Checklist** dei passi + **timer** integrati mentre cucini.
 - 📷 Aggiungi la **tua foto** del piatto (diventa anche un diario).
@@ -68,7 +71,7 @@ js/filters.js         # ricerca, filtri, "Sorprendimi"
 js/timer.js           # timer dei passi
 js/form.js            # form "aggiungi ricetta" + export/import
 js/app.js             # cuore dell'app (navigazione, rendering)
-data/recipes.js       # le 58 ricette (modificabile a mano)
+data/recipes.js       # le 62 ricette (modificabile a mano)
 LOW_FODMAP.md         # le regole della dieta usate + avvertenze
 ```
 
