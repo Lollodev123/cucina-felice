@@ -353,6 +353,22 @@ img { max-width: 100%; display: block; }
 .field input:focus, .field textarea:focus { border-color: var(--brand); }
 .field textarea { resize: vertical; min-height: 64px; }
 .field__hint { font-size: 12px; color: var(--ink-soft); margin-top: 4px; }
+
+/* pillole selezionabili dei tag nel form */
+.form-chips { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 7px; }
+.form-chip {
+  background: #fff; border: 1.5px solid var(--line); color: var(--ink);
+  padding: 7px 12px; border-radius: 999px; font-size: 13px; font-weight: 700;
+  display: inline-flex; align-items: center; gap: 6px; transition: all 0.12s ease;
+}
+.form-chip:hover { border-color: var(--brand); transform: translateY(-1px); }
+.form-chip.active { background: var(--brand-grad); color: #fff; border-color: transparent; box-shadow: var(--shadow); }
+.form-chip .cdot { width: 11px; height: 11px; border-radius: 50%; border: 1.5px solid #fff; box-shadow: 0 0 0 1px var(--line); }
+.form-chip-extra {
+  width: 100%; padding: 8px 11px; border-radius: 10px; border: 1.5px dashed var(--line);
+  font-family: inherit; font-size: 13px; background: #fff; color: var(--ink); outline: none;
+}
+.form-chip-extra:focus { border-color: var(--brand); }
 .row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
 .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 

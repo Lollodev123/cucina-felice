@@ -125,16 +125,37 @@
       steps: (r.steps || []).map(function (s) {
         return s.text + (s.timerMin && !/\d+\s*min/i.test(s.text) ? " (" + s.timerMin + " min)" : "");
       }).join("\n"),
-      colors: (r.colors || []).join(", "),
-      aromas: (r.aromas || []).join(", "),
-      moods: (r.moods || []).join(", "),
+      colors: r.colors || [],
+      aromas: r.aromas || [],
+      moods: r.moods || [],
       lowFodmap: r.lowFodmap || ""
     };
+  }
+
+  // gruppo di "pillole" selezionabili per un tag (colori/profumi/voglia)
+  function chipToggleGroup(title, name, allValues, selected, colored) {
+    var selSet = {};
+    (selected || []).forEach(function (v) { selSet[v] = true; });
+    var values = allValues.slice();
+    (selected || []).forEach(function (v) { if (values.indexOf(v) < 0) values.push(v); });
+    var chips = values.map(function (v) {
+      var dot = colored ? '<span class="cdot" style="background:' + window.Filters.colorCss(v) + '"></span>' : "";
+      return '<button type="button" class="form-chip' + (selSet[v] ? " active" : "") +
+        '" data-facet="' + name + '" data-val="' + escAttr(v) + '">' + dot + escAttr(v) + "</button>";
+    }).join("");
+    return '<div class="field"><label>' + title + "</label>" +
+      '<div class="form-chips">' + chips + "</div>" +
+      '<input class="form-chip-extra" name="' + name + '_extra" placeholder="+ aggiungi (separati da virgola)">' +
+      "</div>";
   }
 
   function formHTML(p, isEdit) {
     p = p || {};
     var diff = p.difficulty || "facile";
+    var facets = (window.Filters && window.Store) ? window.Filters.facets(window.Store.getAllRecipes()) : { colors: [], aromas: [], moods: [] };
+    var palette = ["rosso", "arancione", "giallo", "verde", "bianco", "viola", "rosa", "marrone"];
+    var colorVals = palette.slice();
+    facets.colors.forEach(function (c) { if (colorVals.indexOf(c) < 0) colorVals.push(c); });
     return '<div class="modal" role="dialog" aria-modal="true">' +
         '<div class="modal__head"><h2>' + (isEdit ? "✏️ Modifica ricetta" : "🍳 Aggiungi una ricetta") + "</h2>" +
           '<button class="icon-btn" data-x>✕</button></div>' +
@@ -169,11 +190,9 @@
           field("Passi (uno per riga — scrivi \"12 min\" per un timer)", "steps", pick(p.steps, ""), {
             area: true, rows: 5, ph: "Lessa il riso 12 min.\nRosola il pollo 6 min.\nServi con le zucchine."
           }) +
-          '<div class="row3">' +
-            field("Colori", "colors", pick(p.colors, ""), { ph: "giallo, verde" }) +
-            field("Profumi", "aromas", pick(p.aromas, ""), { ph: "limone" }) +
-            field("Voglia", "moods", pick(p.moods, ""), { ph: "veloce, comfort" }) +
-          "</div>" +
+          chipToggleGroup("🎨 Colori (tocca per scegliere)", "colors", colorVals, p.colors || [], true) +
+          chipToggleGroup("👃 Profumi", "aromas", facets.aromas, p.aromas || [], false) +
+          chipToggleGroup("💭 Voglia", "moods", facets.moods, p.moods || [], false) +
           field("Nota low-FODMAP (facoltativa)", "lowFodmap", pick(p.lowFodmap, ""), { area: true, rows: 2, ph: "Es. olio all'aglio infuso al posto dell'aglio." }) +
           '<button type="submit" class="btn btn--primary btn--block btn--lg">' + (isEdit ? "💾 Salva le modifiche" : "✨ Salva la ricetta") + "</button>" +
         "</form>" +
@@ -188,10 +207,24 @@
     function close() { bg.remove(); }
     bg.addEventListener("click", function (e) { if (e.target === bg || e.target.hasAttribute("data-x")) close(); });
 
+    // pillole dei tag: si accendono/spengono al click
+    bg.querySelectorAll(".form-chip").forEach(function (b) {
+      b.addEventListener("click", function () { b.classList.toggle("active"); });
+    });
+
     bg.querySelector("#lf-form").addEventListener("submit", function (e) {
       e.preventDefault();
       var fd = new FormData(e.target), o = {};
       fd.forEach(function (v, k) { o[k] = v; });
+      // raccogli i tag dalle pillole attive + eventuali aggiunte a mano
+      ["colors", "aromas", "moods"].forEach(function (facet) {
+        var sel = Array.prototype.slice.call(bg.querySelectorAll('.form-chip[data-facet="' + facet + '"].active'))
+          .map(function (b) { return b.getAttribute("data-val"); });
+        var extra = (o[facet + "_extra"] || "").split(/[,\n]/).map(function (s) { return s.trim(); }).filter(Boolean);
+        var seen = {}, merged = [];
+        sel.concat(extra).forEach(function (v) { var k = v.toLowerCase(); if (!seen[k]) { seen[k] = 1; merged.push(v); } });
+        o[facet] = merged.join(", ");
+      });
       if (!o.title.trim()) return window.App.toast("Dai un titolo alla ricetta 🙂");
       if (!o.proteinName.trim() || !o.carbName.trim() || !o.veggieName.trim())
         return window.App.toast("Servono le 3 fonti: proteina, carbo e verdura 🍗🥔🥬");
