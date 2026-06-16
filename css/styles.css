@@ -119,8 +119,22 @@ img { max-width: 100%; display: block; }
 .btn-surprise:hover { transform: translateY(-2px) rotate(-1deg); filter: saturate(1.1); }
 .btn-surprise:active { transform: scale(0.97); }
 
+/* ---------------- Quick filters (always visible) ---------------- */
+.quickbar {
+  display: flex; gap: 8px; margin: 12px 0 2px; padding-bottom: 4px;
+  overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none;
+}
+.quickbar::-webkit-scrollbar { display: none; }
+.qchip {
+  flex: 0 0 auto; background: var(--card); border: 1.5px solid var(--line);
+  color: var(--ink); padding: 9px 15px; border-radius: 999px;
+  font-size: 14px; font-weight: 800; white-space: nowrap; transition: all 0.12s ease;
+}
+.qchip:hover { transform: translateY(-1px); border-color: var(--brand); }
+.qchip.active { background: var(--brand-grad); color: #fff; border-color: transparent; box-shadow: var(--shadow); }
+
 /* ---------------- Filters ---------------- */
-.filters { margin: 14px 0 6px; }
+.filters { margin: 8px 0 6px; }
 .filter-group { margin-bottom: 10px; }
 .filter-group__title {
   font-size: 12px; font-weight: 800; text-transform: uppercase;
@@ -155,8 +169,10 @@ img { max-width: 100%; display: block; }
 }
 .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
 .card__hero {
-  height: 120px; display: grid; place-items: center; font-size: 56px;
-  background: var(--joy-grad); position: relative;
+  height: 116px; display: grid; place-items: center; font-size: 54px;
+  /* tinta morbida (meno "urlata" della griglia colorata) */
+  background: linear-gradient(135deg, #fff1d8, #ffe6ef);
+  position: relative;
 }
 .card__hero img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .card__fav {
