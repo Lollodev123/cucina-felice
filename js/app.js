@@ -6,7 +6,7 @@
   "use strict";
 
   var state = Filters.emptyState();
-  var filtersOpen = window.innerWidth > 760; // su mobile partono chiusi
+  var filtersOpen = false; // i filtri partono chiusi (meno "overwhelm"); si aprono col tasto 🎛️
 
   var els = {};
   function $(id) { return document.getElementById(id); }
@@ -121,12 +121,12 @@
         var facet = btn.getAttribute("data-facet"), val = btn.getAttribute("data-val");
         var arr = state[facet], i = arr.indexOf(val);
         if (i >= 0) arr.splice(i, 1); else arr.push(val);
-        renderFilters(); renderHomeList();
+        renderFilters(); renderQuickbar(); renderHomeList();
       });
     });
     var favBtn = els.filters.querySelector(".chip[data-fav]");
     if (favBtn) favBtn.addEventListener("click", function () {
-      state.favOnly = !state.favOnly; renderFilters(); renderHomeList();
+      state.favOnly = !state.favOnly; renderFilters(); renderQuickbar(); renderHomeList();
     });
   }
 
@@ -189,7 +189,7 @@
     });
     var clr = $("clear-f");
     if (clr) clr.addEventListener("click", function () {
-      state = Filters.emptyState(); els.search.value = ""; renderFilters(); renderHomeList();
+      state = Filters.emptyState(); els.search.value = ""; renderFilters(); renderQuickbar(); renderHomeList();
     });
     if (els.btnFilters) els.btnFilters.classList.toggle("has-dot", Filters.activeCount(state) > 0);
   }
@@ -199,10 +199,36 @@
     els.btnFilters.classList.toggle("on", filtersOpen);
   }
 
+  // filtri rapidi sempre visibili (i più usati) — niente bisogno di aprire il pannello
+  var QUICK = [
+    { label: "🥗 Fit", val: "fit" },
+    { label: "⚡ Veloce", val: "veloce" },
+    { label: "🐟 Mare", val: "mare" },
+    { label: "🫶 Comfort", val: "comfort" },
+    { label: "❤️ Preferite", fav: true }
+  ];
+  function renderQuickbar() {
+    els.quickbar.innerHTML = QUICK.map(function (q) {
+      var active = q.fav ? state.favOnly : state.moods.indexOf(q.val) >= 0;
+      return '<button class="qchip' + (active ? " active" : "") + '" data-q="' +
+        (q.fav ? "fav" : esc(q.val)) + '">' + q.label + "</button>";
+    }).join("");
+    els.quickbar.querySelectorAll("[data-q]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        var v = b.getAttribute("data-q");
+        if (v === "fav") state.favOnly = !state.favOnly;
+        else { var i = state.moods.indexOf(v); if (i >= 0) state.moods.splice(i, 1); else state.moods.push(v); }
+        renderQuickbar(); renderFilters(); renderHomeList();
+      });
+    });
+  }
+
   function showHome() {
     els.tools.style.display = "";
     els.btnFilters.style.display = "";
+    els.quickbar.style.display = "";
     applyFiltersVisibility();
+    renderQuickbar();
     renderFilters();
     renderHomeList();
     window.scrollTo(0, 0);
@@ -324,6 +350,7 @@
     els.tools.style.display = "none";
     els.filters.style.display = "none";
     els.btnFilters.style.display = "none";
+    els.quickbar.style.display = "none";
     els.view.innerHTML = '<div class="detail">' + detailHTML(r) + "</div>";
     window.scrollTo(0, 0);
 
@@ -503,6 +530,7 @@
     els.toast = $("toast");
     els.confetti = $("confetti");
     els.btnFilters = $("btn-filters");
+    els.quickbar = $("quickbar");
 
     els.btnFilters.addEventListener("click", function () {
       filtersOpen = !filtersOpen;

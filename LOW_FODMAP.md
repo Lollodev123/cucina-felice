@@ -23,7 +23,7 @@ eliminazione low-FODMAP** secondo le linee guida della **Monash University**.
 **Pochi legumi:** solo **piccole porzioni** di ceci/lenticchie **in scatola e sciacquati** (in poche ricette).
 
 **Verdure ok** (in porzione): zucchine, carote, spinaci, peperoni, pomodoro/pomodorini,
-melanzane, fagiolini, lattuga, cetriolo, patate, olive, rucola, zucca, finocchio.
+melanzane, fagiolini, lattuga, cetriolo, patate, rucola, zucca.
 
 **Carboidrati:** riso, polenta (mais), patate, quinoa, pane a **lievitazione naturale**,
 pasta in **porzione low-FODMAP** (circa 75 g a testa) oppure **pasta senza glutine**.

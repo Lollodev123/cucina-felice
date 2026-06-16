@@ -1,0 +1,16 @@
+{
+  "name": "Cucina Felice — ricette low-FODMAP",
+  "short_name": "Cucina Felice",
+  "description": "50+ ricette italiane semplici, colorate e profumate, pensate per la dieta low-FODMAP.",
+  "lang": "it",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fff8f0",
+  "theme_color": "#ff6f3c",
+  "icons": [
+    { "src": "assets/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
