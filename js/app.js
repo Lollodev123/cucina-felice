@@ -201,6 +201,8 @@
 
   // filtri rapidi sempre visibili (i più usati) — niente bisogno di aprire il pannello
   var QUICK = [
+    { label: "🥤 Frullati", val: "frullato" },
+    { label: "🍪 Merende", val: "merenda" },
     { label: "🥗 Fit", val: "fit" },
     { label: "⚡ Veloce", val: "veloce" },
     { label: "🐟 Mare", val: "mare" },
