@@ -32,7 +32,7 @@ window.SEED_RECIPES = (window.SEED_RECIPES || []).concat([
       { name: "Kiwi", qty: "1", emoji: "🥝" },
       { name: "Spinacino", qty: "1 manciata", emoji: "🥬" },
       { name: "Yogurt senza lattosio", qty: "100 g", emoji: "🥛" },
-      { name: "Acqua o latte di mandorla", qty: "100 ml", emoji: "🥛" }
+      { name: "Acqua o latte di riso", qty: "100 ml", emoji: "🥛" }
     ],
     steps: [
       { text: "Metti banana, kiwi, spinacino, yogurt e liquido nel frullatore.", emoji: "🫙" },
@@ -40,7 +40,7 @@ window.SEED_RECIPES = (window.SEED_RECIPES || []).concat([
       { text: "Versa nel bicchiere e bevi subito.", emoji: "🥤" }
     ],
     finalEmoji: "🥤",
-    lowFodmap: "Banana ben soda, kiwi e spinaci low-FODMAP. Yogurt senza lattosio o latte di mandorla."
+    lowFodmap: "Banana ben soda, kiwi e spinaci low-FODMAP. Yogurt senza lattosio o latte di riso."
   },
   {
     id: "frull-rosa-aurora",
@@ -58,15 +58,15 @@ window.SEED_RECIPES = (window.SEED_RECIPES || []).concat([
       { name: "Banana piccola e soda", qty: "½", emoji: "🍌" },
       { name: "Spinacino", qty: "1 manciata", emoji: "🥬" },
       { name: "Semi di chia", qty: "1 cucchiaio", emoji: "⚪" },
-      { name: "Latte di mandorla", qty: "150 ml", emoji: "🥛" }
+      { name: "Latte di riso", qty: "150 ml", emoji: "🥛" }
     ],
     steps: [
-      { text: "Metti fragole, banana, spinacino, chia e latte di mandorla nel frullatore.", emoji: "🫙" },
+      { text: "Metti fragole, banana, spinacino, chia e latte di riso nel frullatore.", emoji: "🫙" },
       { text: "Frulla 1 minuto.", emoji: "🌀", timerMin: 1 },
       { text: "Versa e bevi.", emoji: "🥤" }
     ],
     finalEmoji: "🥤",
-    lowFodmap: "Fragole (≤10) e ½ banana soda low-FODMAP. Latte di mandorla senza inulina. Senza lattosio."
+    lowFodmap: "Fragole (≤10) e ½ banana soda low-FODMAP. Latte di riso senza inulina. Senza lattosio."
   },
   {
     id: "frull-tropicale-birichino",
@@ -223,7 +223,7 @@ window.SEED_RECIPES = (window.SEED_RECIPES || []).concat([
       { name: "Banana piccola e soda", qty: "1", emoji: "🍌" },
       { name: "Semi di chia", qty: "1 cucchiaio", emoji: "⚪" },
       { name: "Spinacino", qty: "1 manciata", emoji: "🥬" },
-      { name: "Latte di mandorla", qty: "150 ml", emoji: "🥛" }
+      { name: "Latte di riso", qty: "150 ml", emoji: "🥛" }
     ],
     steps: [
       { text: "Metti tutto nel frullatore.", emoji: "🫙" },
@@ -231,7 +231,7 @@ window.SEED_RECIPES = (window.SEED_RECIPES || []).concat([
       { text: "Versa e bevi.", emoji: "🥤" }
     ],
     finalEmoji: "🥤",
-    lowFodmap: "Lamponi (≈30 g) e banana soda low-FODMAP. Latte di mandorla, senza lattosio."
+    lowFodmap: "Lamponi (≈30 g) e banana soda low-FODMAP. Latte di riso, senza lattosio."
   },
   {
     id: "frull-fragolina-frizzante",
