@@ -167,7 +167,15 @@
     CAT_ORDER.forEach(function (c) {
       grouped[c].sort(function (a, b) { return a.name.localeCompare(b.name); });
     });
-    var total = Object.keys(items).length;
+    // voci aggiunte a mano dall'utente (in fondo a ogni categoria)
+    var custom = plan.customItems || {};
+    CAT_ORDER.forEach(function (c) {
+      (custom[c] || []).forEach(function (name) {
+        grouped[c].push({ key: "c:" + c + ":" + window.Store.normKey(name), name: name, cat: c, count: 1, qtys: [], custom: true });
+      });
+    });
+    var total = 0;
+    CAT_ORDER.forEach(function (c) { total += grouped[c].length; });
     return { grouped: grouped, order: CAT_ORDER, cat: CAT, total: total };
   }
 

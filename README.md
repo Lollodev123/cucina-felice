@@ -11,7 +11,7 @@ per chi non ama cucinare e si annoia in fretta.
 "Aggiungi a Home" per averla come **app installabile** (funziona anche offline).
 
 ## ✨ Cosa puoi fare
-- 🛒 **Pianifica la spesa**: scegli *settimana / 3 giorni / n. pasti* → ti propone i pasti (2/giorno, pescando tra Fit e Preferite) che puoi spuntare/cambiare → genera la **lista della spesa divisa per reparti**, con quantità, spuntabile mentre fai la spesa e con tasto **Copia**.
+- 🛒 **Pianifica la spesa**: scegli *settimana / 3 giorni / n. pasti* → ti propone i pasti (2/giorno, pescando tra Fit e Preferite) che puoi **spuntare, cambiare a caso 🔄 o cercare 🔍** (e ➕ aggiungerne) → genera la **lista della spesa divisa per reparti**, con quantità, spuntabile, con una riga **"aggiungi…"** in ogni reparto per le tue voci, e tasto **📋 Copia**.
 - 🎲 **Sorprendimi**: ti sceglie una ricetta a caso (basta con la paralisi da scelta).
 - ⚡ **Filtri rapidi** sempre in vista: 🥤 Frullati, 🍪 Merende, Fit, Veloce, Mare, Comfort, Preferite.
 - 🥗 Tante ricette **fit/leggere** (cerca il tag "fit").

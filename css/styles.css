@@ -458,6 +458,25 @@ img { max-width: 100%; display: block; }
 .shop-item.done .shop-item__check { background: var(--verde); border-color: var(--verde); }
 .shop-item__text { font-size: 14.5px; font-weight: 600; }
 .shop-item.done .shop-item__text { text-decoration: line-through; color: var(--ink-soft); }
+.shop-item__rm { margin-left: auto; flex: none; width: 26px; height: 26px; border-radius: 8px; background: transparent; color: var(--ink-soft); font-size: 14px; font-weight: 800; }
+.shop-item__rm:hover { color: var(--rosso); background: #ffe4e0; }
+
+/* riga "aggiungi…" in ogni categoria della lista */
+.shop-add { display: flex; align-items: center; gap: 10px; padding: 4px 6px; cursor: text; }
+.shop-item__check.ghost { border-style: dashed; color: var(--ink-soft); background: transparent; font-weight: 900; }
+.shop-add__input { flex: 1; border: none; background: transparent; outline: none; font-family: inherit; font-size: 14.5px; color: var(--ink); padding: 6px 0; }
+.shop-add__input::placeholder { color: var(--ink-soft); font-style: italic; }
+
+/* righe della finestra "scegli ricetta" */
+.pick-row {
+  display: flex; align-items: center; gap: 10px; width: 100%; text-align: left;
+  background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+  padding: 10px 12px; margin-bottom: 7px; transition: all 0.12s ease;
+}
+.pick-row:hover { border-color: var(--brand); transform: translateY(-1px); }
+.pick-row__emoji { font-size: 24px; flex: none; }
+.pick-row__title { flex: 1; font-weight: 700; font-size: 14px; line-height: 1.25; }
+.pick-row__time { font-size: 12px; color: var(--ink-soft); flex: none; }
 
 /* ---------------- Animations ---------------- */
 @keyframes pop { 0% { transform: scale(0.6); opacity: 0; } 70% { transform: scale(1.08); } 100% { transform: scale(1); opacity: 1; } }

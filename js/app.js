@@ -492,7 +492,8 @@
         '<span class="meal__emoji">' + (r.emoji || "🍽️") + "</span>" +
         '<span class="meal__title">' + esc(r.title) + "</span>" +
       "</button>" +
-      '<button class="meal__swap" data-swap="' + which + ":" + idx + '" title="Cambia ricetta">🔄</button>' +
+      '<button class="meal__swap" data-pick="' + which + ":" + idx + '" title="Cerca e scegli">🔍</button>' +
+      '<button class="meal__swap" data-swap="' + which + ":" + idx + '" title="Cambia a caso">🔄</button>' +
       "</div>";
   }
 
@@ -506,20 +507,21 @@
       }
       days += "</div>";
     }
-    var snacks = "";
+    var addMeal = '<button class="btn btn--ghost btn--block" data-add="meal" style="margin:2px 0 4px">➕ Aggiungi un pasto</button>';
+    var snacks = '<div class="section-title">🍪 Merende</div>';
     if (plan.snacksOn && plan.snacks.length) {
-      snacks = '<div class="section-title">🍪 Merende</div>' +
-        plan.snacks.map(function (s, i) { return planMealCard(s, i, "snack"); }).join("");
+      snacks += plan.snacks.map(function (s, i) { return planMealCard(s, i, "snack"); }).join("");
     }
+    snacks += '<button class="btn btn--ghost btn--block" data-add="snack" style="margin:2px 0 4px">➕ Aggiungi una merenda</button>';
     return '<div class="detail">' +
       '<button class="back" data-plan-nav="home">← Home</button>' +
       '<h1 style="margin:6px 0 2px">🗓️ Il tuo piano</h1>' +
-      '<p style="color:var(--ink-soft);margin:0 0 12px">' + plan.totalMeals + " pasti in " + plan.days + " giorni. Spunta ✓ quelli che tieni, 🔄 per cambiare.</p>" +
+      '<p style="color:var(--ink-soft);margin:0 0 12px">' + plan.totalMeals + " pasti in " + plan.days + " giorni. 🔍 cerca · 🔄 cambia · ✓ tieni.</p>" +
       '<div class="final__row" style="justify-content:flex-start;margin-bottom:6px">' +
         '<button class="btn" data-act="reshuffle">🎲 Rimescola tutto</button>' +
         '<button class="btn btn--ghost" data-plan-nav="setup">↩︎ Cambia durata</button>' +
       "</div>" +
-      days + snacks +
+      days + addMeal + snacks +
       '<button class="btn btn--primary btn--block btn--lg" data-plan-nav="list" style="margin-top:18px">🛒 Fai la lista della spesa →</button>' +
       "</div>";
   }
@@ -530,15 +532,17 @@
     var got = 0;
     var body = list.order.map(function (c) {
       var arr = list.grouped[c];
-      if (!arr.length) return "";
       var rows = arr.map(function (it) {
         var on = !!checked[it.key];
         if (on) got++;
+        var rm = it.custom ? '<button class="shop-item__rm" data-rm="' + it.cat + "|" + esc(it.name) + '" title="Togli">✕</button>' : "";
         return '<div class="shop-item' + (on ? " done" : "") + '" data-item="' + esc(it.key) + '">' +
           '<button class="shop-item__check">' + (on ? "✓" : "") + "</button>" +
-          '<span class="shop-item__text">' + esc(Planner.itemLine(it)) + "</span></div>";
+          '<span class="shop-item__text">' + esc(Planner.itemLine(it)) + "</span>" + rm + "</div>";
       }).join("");
-      return '<div class="shop-cat"><div class="shop-cat__title">' + list.cat[c].label + "</div>" + rows + "</div>";
+      var add = '<div class="shop-add"><span class="shop-item__check ghost">＋</span>' +
+        '<input class="shop-add__input" data-addcat="' + c + '" placeholder="aggiungi…" autocomplete="off"></div>';
+      return '<div class="shop-cat"><div class="shop-cat__title">' + list.cat[c].label + "</div>" + rows + add + "</div>";
     }).join("");
     return '<div class="detail">' +
       '<button class="back" data-plan-nav="plan">← al piano</button>' +
@@ -610,18 +614,115 @@
         Planner.swapMeal(plan, which, idx); Store.savePlan(plan); renderPlanner();
       });
     });
+    els.view.querySelectorAll("[data-pick]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        var pr = b.getAttribute("data-pick").split(":"), which = pr[0], idx = +pr[1];
+        openRecipePicker({
+          title: which === "snack" ? "Scegli una merenda" : "Scegli un pasto",
+          pool: which === "snack" ? "snacks" : "mains",
+          onRandom: function () { Planner.swapMeal(plan, which, idx); Store.savePlan(plan); renderPlanner(); },
+          onPick: function (id) { var arr = which === "snack" ? plan.snacks : plan.meals; arr[idx].id = id; arr[idx].checked = true; Store.savePlan(plan); renderPlanner(); }
+        });
+      });
+    });
+    els.view.querySelectorAll("[data-add]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        var which = b.getAttribute("data-add");
+        openRecipePicker({
+          title: which === "snack" ? "Aggiungi una merenda" : "Aggiungi un pasto",
+          pool: which === "snack" ? "snacks" : "mains",
+          onPick: function (id) {
+            if (which === "snack") { plan.snacksOn = true; plan.snacks.push({ id: id, checked: true }); plan.snackCount = plan.snacks.length; }
+            else { plan.meals.push({ id: id, checked: true }); plan.totalMeals = plan.meals.length; plan.days = Math.ceil(plan.totalMeals / plan.mealsPerDay); }
+            Store.savePlan(plan); renderPlanner();
+          }
+        });
+      });
+    });
     els.view.querySelectorAll("[data-open]").forEach(function (b) {
       b.addEventListener("click", function () { location.hash = "#/r/" + b.getAttribute("data-open"); });
     });
-    // list: check item
+    // lista: spunta voce (ignora il click sul tasto "togli")
     els.view.querySelectorAll("[data-item]").forEach(function (row) {
-      row.addEventListener("click", function () {
+      row.addEventListener("click", function (e) {
+        if (e.target.closest("[data-rm]")) return;
         var key = row.getAttribute("data-item");
         plan.listChecked = plan.listChecked || {};
         plan.listChecked[key] = !plan.listChecked[key];
         Store.savePlan(plan); renderPlanner();
       });
     });
+    els.view.querySelectorAll("[data-rm]").forEach(function (b) {
+      b.addEventListener("click", function (e) {
+        e.stopPropagation();
+        var pr = b.getAttribute("data-rm").split("|"), cat = pr[0], name = pr.slice(1).join("|");
+        if (plan.customItems && plan.customItems[cat]) {
+          plan.customItems[cat] = plan.customItems[cat].filter(function (n) { return n !== name; });
+          Store.savePlan(plan); renderPlanner();
+        }
+      });
+    });
+    els.view.querySelectorAll(".shop-add").forEach(function (row) {
+      row.addEventListener("click", function (e) {
+        if (e.target === row || e.target.classList.contains("ghost")) { var i = row.querySelector("input"); if (i) i.focus(); }
+      });
+    });
+    els.view.querySelectorAll("[data-addcat]").forEach(function (inp) {
+      inp.addEventListener("keydown", function (e) {
+        if (e.key !== "Enter") return;
+        var name = inp.value.trim(); if (!name) return;
+        var cat = inp.getAttribute("data-addcat");
+        plan.customItems = plan.customItems || {};
+        plan.customItems[cat] = plan.customItems[cat] || [];
+        if (plan.customItems[cat].indexOf(name) < 0) plan.customItems[cat].push(name);
+        Store.savePlan(plan); renderPlanner();
+        var ni = els.view.querySelector('[data-addcat="' + cat + '"]'); if (ni) ni.focus();
+      });
+    });
+  }
+
+  // finestra per cercare e scegliere una ricetta specifica (usata dal pianificatore)
+  function openRecipePicker(opts) {
+    var poolObj = Planner.pools();
+    var pool = opts.pool === "snacks" ? poolObj.snacks : poolObj.mains;
+    var bg = document.createElement("div");
+    bg.className = "modal-bg";
+    bg.innerHTML =
+      '<div class="modal">' +
+        '<div class="modal__head"><h2>' + esc(opts.title || "Scegli una ricetta") + "</h2>" +
+          '<button class="icon-btn" data-x>✕</button></div>' +
+        '<label class="search" style="margin-bottom:10px">🔎<input id="pick-q" type="search" placeholder="Cerca per nome o ingrediente…" autocomplete="off"></label>' +
+        (opts.onRandom ? '<button class="btn btn--joy btn--block" id="pick-rand" style="margin-bottom:12px">🎲 Scegline una a caso</button>' : "") +
+        '<div id="pick-list"></div>' +
+      "</div>";
+    document.body.appendChild(bg);
+    function close() { bg.remove(); }
+    bg.addEventListener("click", function (e) { if (e.target === bg || e.target.hasAttribute("data-x")) close(); });
+
+    var listEl = bg.querySelector("#pick-list");
+    function render(q) {
+      q = (q || "").toLowerCase();
+      var items = pool.filter(function (r) {
+        if (!q) return true;
+        var hay = (r.title + " " + (r.ingredients || []).map(function (i) { return i.name; }).join(" ")).toLowerCase();
+        return hay.indexOf(q) >= 0;
+      }).slice(0, 80);
+      if (!items.length) { listEl.innerHTML = '<p style="color:var(--ink-soft);text-align:center;padding:24px">Nessuna ricetta trovata 🕵️</p>'; return; }
+      listEl.innerHTML = items.map(function (r) {
+        return '<button class="pick-row" data-id="' + esc(r.id) + '">' +
+          '<span class="pick-row__emoji">' + (r.emoji || "🍽️") + "</span>" +
+          '<span class="pick-row__title">' + esc(r.title) + "</span>" +
+          '<span class="pick-row__time">⏱️ ' + (r.timeMin || "?") + "</span></button>";
+      }).join("");
+      listEl.querySelectorAll("[data-id]").forEach(function (b) {
+        b.addEventListener("click", function () { var id = b.getAttribute("data-id"); close(); opts.onPick(id); });
+      });
+    }
+    var q = bg.querySelector("#pick-q"), t = null;
+    q.addEventListener("input", function () { clearTimeout(t); t = setTimeout(function () { render(q.value); }, 120); });
+    if (opts.onRandom) bg.querySelector("#pick-rand").addEventListener("click", function () { close(); opts.onRandom(); });
+    render("");
+    setTimeout(function () { q.focus(); }, 60);
   }
 
   function showPlanner() {
