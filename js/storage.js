@@ -16,7 +16,8 @@
     cooked: "lf_cooked_count",
     badges: "lf_badges",
     checks: "lf_step_checks",
-    plan: "lf_plan"
+    plan: "lf_plan",
+    pantry: "lf_pantry"
   };
 
   function read(key, fallback) {
@@ -129,6 +130,16 @@
   function getPlan() { return read(K.plan, null); }
   function savePlan(plan) { write(K.plan, plan); }
   function clearPlan() { try { localStorage.removeItem(K.plan); } catch (e) {} }
+
+  /* ---- dispensa (ingredienti che ho sempre) ---- */
+  function getPantry() { return read(K.pantry, []); }
+  function isPantry(word) { return getPantry().indexOf(word) >= 0; }
+  function togglePantry(word) {
+    var p = getPantry(), i = p.indexOf(word);
+    if (i >= 0) p.splice(i, 1); else p.push(word);
+    write(K.pantry, p);
+    return p;
+  }
 
   /* ---- export / import ---- */
   function exportData() {
@@ -263,6 +274,7 @@
     getCooked: getCooked, addCooked: addCooked, BADGE_LEVELS: BADGE_LEVELS,
     getChecks: getChecks, toggleCheck: toggleCheck, clearChecks: clearChecks,
     getPlan: getPlan, savePlan: savePlan, clearPlan: clearPlan,
+    getPantry: getPantry, isPantry: isPantry, togglePantry: togglePantry,
     exportData: exportData, importData: importData,
     getAllRecipes: getAllRecipes, getVisibleRecipes: getVisibleRecipes,
     getRecipeById: getRecipeById, isSeedRecipe: isSeedRecipe, allIngredientKeys: allIngredientKeys,

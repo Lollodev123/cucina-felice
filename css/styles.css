@@ -460,6 +460,8 @@ img { max-width: 100%; display: block; }
 .shop-item.done .shop-item__text { text-decoration: line-through; color: var(--ink-soft); }
 .shop-item__rm { margin-left: auto; flex: none; width: 26px; height: 26px; border-radius: 8px; background: transparent; color: var(--ink-soft); font-size: 14px; font-weight: 800; }
 .shop-item__rm:hover { color: var(--rosso); background: #ffe4e0; }
+.shop-item__pantry { margin-left: auto; flex: none; width: 30px; height: 30px; border-radius: 8px; background: transparent; font-size: 15px; opacity: 0.4; transition: opacity 0.12s ease; }
+.shop-item__pantry:hover { opacity: 1; background: #fff3e0; }
 
 /* riga "aggiungi…" in ogni categoria della lista */
 .shop-add { display: flex; align-items: center; gap: 10px; padding: 4px 6px; cursor: text; }

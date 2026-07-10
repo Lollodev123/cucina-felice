@@ -142,47 +142,84 @@
     return "altro";
   }
 
-  // aggrega gli ingredienti dei pasti/snack SPUNTATI, uniti e per categoria
+  var FRAC = { "½": 0.5, "¼": 0.25, "¾": 0.75, "⅓": 1 / 3, "⅔": 2 / 3, "⅛": 0.125, "⅜": 0.375, "⅝": 0.625, "⅞": 0.875, "⅕": 0.2, "⅖": 0.4, "⅗": 0.6, "⅘": 0.8 };
+  function fmtNum(n) {
+    var r = Math.round(n * 100) / 100;
+    if (Math.abs(r - Math.round(r)) < 0.01) return String(Math.round(r));
+    return String(Math.round(r * 10) / 10);
+  }
+  // "300 g" -> {num:300, unit:"g"}; "½" -> {num:.5, unit:""}; "q.b." -> null
+  function parseQty(q) {
+    q = (q || "").trim();
+    if (!q || /^q\.?b\.?$/i.test(q)) return null;
+    var m = q.match(/^([\d]+(?:[.,]\d+)?)?\s*([½¼¾⅓⅔⅛⅜⅝⅞⅕⅖⅗⅘])?\s*(.*)$/);
+    if (!m || (!m[1] && !m[2])) return null;
+    var num = (m[1] ? parseFloat(m[1].replace(",", ".")) : 0) + (m[2] ? FRAC[m[2]] : 0);
+    return { num: num, unit: (m[3] || "").trim() };
+  }
+  // scompone "Olio EVO + limone" / "Olio, limone, sale" in più voci (non su " e ")
+  function splitCompound(name) {
+    var parts = String(name).split(/\s*\+\s*|\s*,\s*/).map(function (s) { return s.trim(); }).filter(Boolean);
+    return parts.length ? parts : [name];
+  }
+  // "chiave dispensa" = prima parola normalizzata (olio, sale, pepe...)
+  function stapleKey(name) { return window.Store.normKey(name).split(" ")[0]; }
+
+  // aggrega gli ingredienti dei pasti/snack SPUNTATI: scompone i composti,
+  // scala per n. persone, somma le stesse unità, toglie quelli in dispensa
   function buildShoppingList(plan) {
     var ids = plan.meals.filter(function (s) { return s.checked; }).map(function (s) { return s.id; });
     if (plan.snacksOn) ids = ids.concat(plan.snacks.filter(function (s) { return s.checked; }).map(function (s) { return s.id; }));
+    var mult = (plan.people ? plan.people : 2) / 2;
+    var pantry = window.Store.getPantry();
 
-    var items = {}; // key -> { key, name, cat, count, qtys[] }
+    var items = {};
+    function add(name, qty) {
+      var key = window.Store.normKey(name);
+      if (!key) return;
+      if (!items[key]) items[key] = { key: key, name: name, cat: categorize(name), count: 0, unitSums: {}, rawQtys: [], staple: stapleKey(name) };
+      var it = items[key];
+      it.count++;
+      var p = parseQty(qty);
+      if (p) it.unitSums[p.unit] = (it.unitSums[p.unit] || 0) + p.num * mult;
+      else if (qty && !/^q\.?b\.?$/i.test(String(qty).trim()) && it.rawQtys.indexOf(String(qty).trim()) < 0) it.rawQtys.push(String(qty).trim());
+    }
     ids.forEach(function (id) {
       var r = window.Store.getRecipeById(id);
       if (!r) return;
       (r.ingredients || []).forEach(function (ing) {
-        var key = window.Store.normKey(ing.name);
-        if (!key) return;
-        if (!items[key]) items[key] = { key: key, name: ing.name, emoji: ing.emoji || "", cat: categorize(ing.name), count: 0, qtys: [] };
-        items[key].count++;
-        var q = (ing.qty || "").trim();
-        if (q && q !== "q.b." && items[key].qtys.indexOf(q) < 0) items[key].qtys.push(q);
+        splitCompound(ing.name).forEach(function (nm) { add(nm, ing.qty); });
       });
     });
 
-    var grouped = {};
+    var grouped = {}, hidden = [];
     CAT_ORDER.forEach(function (c) { grouped[c] = []; });
-    Object.keys(items).forEach(function (k) { grouped[items[k].cat].push(items[k]); });
-    CAT_ORDER.forEach(function (c) {
-      grouped[c].sort(function (a, b) { return a.name.localeCompare(b.name); });
+    Object.keys(items).forEach(function (k) {
+      if (pantry.indexOf(items[k].staple) >= 0) hidden.push(items[k]);
+      else grouped[items[k].cat].push(items[k]);
     });
+    CAT_ORDER.forEach(function (c) { grouped[c].sort(function (a, b) { return a.name.localeCompare(b.name); }); });
+    hidden.sort(function (a, b) { return a.name.localeCompare(b.name); });
+
     // voci aggiunte a mano dall'utente (in fondo a ogni categoria)
     var custom = plan.customItems || {};
     CAT_ORDER.forEach(function (c) {
       (custom[c] || []).forEach(function (name) {
-        grouped[c].push({ key: "c:" + c + ":" + window.Store.normKey(name), name: name, cat: c, count: 1, qtys: [], custom: true });
+        grouped[c].push({ key: "c:" + c + ":" + window.Store.normKey(name), name: name, cat: c, count: 1, unitSums: {}, rawQtys: [], custom: true });
       });
     });
     var total = 0;
     CAT_ORDER.forEach(function (c) { total += grouped[c].length; });
-    return { grouped: grouped, order: CAT_ORDER, cat: CAT, total: total };
+    return { grouped: grouped, order: CAT_ORDER, cat: CAT, total: total, hidden: hidden, people: plan.people || 2 };
   }
 
   function itemLine(it) {
-    var q = it.qtys.length ? " (" + it.qtys.join(", ") + ")" : "";
-    var mult = it.count > 1 ? " ×" + it.count : "";
-    return it.name + mult + q;
+    var parts = [];
+    Object.keys(it.unitSums).forEach(function (u) { parts.push(fmtNum(it.unitSums[u]) + (u ? " " + u : "")); });
+    (it.rawQtys || []).forEach(function (q) { parts.push(q); });
+    var qty = parts.join(", ");
+    if (qty) return it.name + " — " + qty;
+    return it.name + (it.count > 1 ? " ×" + it.count : "");
   }
 
   function listAsText(plan) {

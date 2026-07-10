@@ -302,6 +302,7 @@
       '<div class="story">' + esc(r.story || "") + "</div>" +
       '<div class="section-title">🍽️ Piatto bilanciato</div>' + pcv +
       '<div class="section-title">🧺 Ingredienti</div>' + ings +
+      '<button class="btn btn--ghost btn--block" id="d-toshop" style="margin-top:10px">🛒 Aggiungi alla lista della spesa</button>' +
       '<div class="section-title">📖 La storia, passo passo</div>' +
       '<p style="color:var(--ink-soft);font-size:13px;margin:-4px 0 10px">Spunta i passi mentre cucini e avvia i timer. 👇</p>' +
       steps +
@@ -380,6 +381,7 @@
       showDetail(r.id);
     });
     $("d-del").addEventListener("click", function () { deleteRecipe(r); });
+    $("d-toshop").addEventListener("click", function () { addRecipeToPlan(r); });
 
     // checklist
     els.view.querySelectorAll("[data-check]").forEach(function (b) {
@@ -446,6 +448,19 @@
 
   function configTotal() {
     return planConfig.mode === "week" ? 14 : planConfig.mode === "3days" ? 6 : planConfig.customMeals;
+  }
+
+  // aggiunge gli ingredienti di una ricetta alla lista (crea il piano se non c'è)
+  function addRecipeToPlan(r) {
+    var plan = Store.getPlan();
+    if (!plan) plan = Planner.generate({ mode: "meals", totalMeals: 0, snacksOn: false, snackCount: 0 });
+    var already = plan.meals.concat(plan.snacks).some(function (s) { return s.id === r.id; });
+    if (already) { toast("È già nella tua lista 🛒"); return; }
+    var snackR = (r.moods || []).indexOf("frullato") >= 0 || (r.moods || []).indexOf("merenda") >= 0;
+    if (snackR) { plan.snacksOn = true; plan.snacks.push({ id: r.id, checked: true }); plan.snackCount = plan.snacks.length; }
+    else { plan.meals.push({ id: r.id, checked: true }); plan.totalMeals = plan.meals.length; plan.days = Math.ceil(plan.totalMeals / (plan.mealsPerDay || 2)); }
+    Store.savePlan(plan);
+    toast("Aggiunto alla lista della spesa 🛒");
   }
 
   function pillBtn(active, label, attrs) {
@@ -535,23 +550,38 @@
       var rows = arr.map(function (it) {
         var on = !!checked[it.key];
         if (on) got++;
-        var rm = it.custom ? '<button class="shop-item__rm" data-rm="' + it.cat + "|" + esc(it.name) + '" title="Togli">✕</button>' : "";
+        var tail = it.custom
+          ? '<button class="shop-item__rm" data-rm="' + it.cat + "|" + esc(it.name) + '" title="Togli">✕</button>'
+          : '<button class="shop-item__pantry" data-pantry="' + esc(it.staple) + '" title="Ce l\'ho già (dispensa)">🥫</button>';
         return '<div class="shop-item' + (on ? " done" : "") + '" data-item="' + esc(it.key) + '">' +
           '<button class="shop-item__check">' + (on ? "✓" : "") + "</button>" +
-          '<span class="shop-item__text">' + esc(Planner.itemLine(it)) + "</span>" + rm + "</div>";
+          '<span class="shop-item__text">' + esc(Planner.itemLine(it)) + "</span>" + tail + "</div>";
       }).join("");
       var add = '<div class="shop-add"><span class="shop-item__check ghost">＋</span>' +
         '<input class="shop-add__input" data-addcat="' + c + '" placeholder="aggiungi…" autocomplete="off"></div>';
       return '<div class="shop-cat"><div class="shop-cat__title">' + list.cat[c].label + "</div>" + rows + add + "</div>";
     }).join("");
+    var pantry = "";
+    if (list.hidden && list.hidden.length) {
+      pantry = '<details class="tips"><summary>🥫 Ho già in dispensa (' + list.hidden.length + ")</summary>" +
+        '<div style="padding:4px 10px 12px">' +
+        list.hidden.map(function (it) {
+          return '<div class="shop-item"><span class="shop-item__text" style="flex:1">' + esc(it.name) +
+            '</span><button class="btn btn--ghost" data-unpantry="' + esc(it.staple) + '">↩︎ rimetti</button></div>';
+        }).join("") + "</div></details>";
+    }
     return '<div class="detail">' +
       '<button class="back" data-plan-nav="plan">← al piano</button>' +
       '<div style="display:flex;align-items:center;gap:10px;margin:6px 0 2px">' +
         '<h1 style="margin:0;flex:1">🛒 Lista della spesa</h1>' +
         '<button class="btn btn--primary" data-act="copy">📋 Copia</button>' +
       "</div>" +
-      '<p style="color:var(--ink-soft);margin:0 0 14px" id="shop-count">' + list.total + " cose · " + got + " prese</p>" +
-      body +
+      '<div class="final__row" style="justify-content:space-between;align-items:center;margin:8px 0 14px">' +
+        '<span style="color:var(--ink-soft);font-weight:700">' + list.total + " cose · " + got + " prese</span>" +
+        stepper("👥 per", "people", list.people, "") +
+      "</div>" +
+      body + pantry +
+      '<p class="disclaimer">💡 Tocca 🥫 su una voce per dire che ce l\'hai già: sparisce dalla lista. Le dosi sono indicative (scalate dalle porzioni).</p>' +
       "</div>";
   }
 
@@ -585,6 +615,8 @@
         else if (act === "snack-inc") planConfig.snackCount = Math.min(14, planConfig.snackCount + 1);
         else if (act === "snack-dec") planConfig.snackCount = Math.max(1, planConfig.snackCount - 1);
         else if (act === "snack-toggle") planConfig.snacksOn = !planConfig.snacksOn;
+        else if (act === "people-inc") { plan.people = (plan.people || 2) + 1; Store.savePlan(plan); renderPlanner(); return; }
+        else if (act === "people-dec") { plan.people = Math.max(1, (plan.people || 2) - 1); Store.savePlan(plan); renderPlanner(); return; }
         else if (act === "generate") {
           var np = Planner.generate({ mode: planConfig.mode, totalMeals: configTotal(), snacksOn: planConfig.snacksOn, snackCount: planConfig.snackCount });
           Store.savePlan(np); planStep = "plan"; renderPlanner(); window.scrollTo(0, 0); return;
@@ -645,11 +677,25 @@
     // lista: spunta voce (ignora il click sul tasto "togli")
     els.view.querySelectorAll("[data-item]").forEach(function (row) {
       row.addEventListener("click", function (e) {
-        if (e.target.closest("[data-rm]")) return;
+        if (e.target.closest("[data-rm]") || e.target.closest("[data-pantry]")) return;
         var key = row.getAttribute("data-item");
         plan.listChecked = plan.listChecked || {};
         plan.listChecked[key] = !plan.listChecked[key];
         Store.savePlan(plan); renderPlanner();
+      });
+    });
+    els.view.querySelectorAll("[data-pantry]").forEach(function (b) {
+      b.addEventListener("click", function (e) {
+        e.stopPropagation();
+        Store.togglePantry(b.getAttribute("data-pantry"));
+        toast("Spostato in dispensa 🥫");
+        renderPlanner();
+      });
+    });
+    els.view.querySelectorAll("[data-unpantry]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        Store.togglePantry(b.getAttribute("data-unpantry"));
+        renderPlanner();
       });
     });
     els.view.querySelectorAll("[data-rm]").forEach(function (b) {
