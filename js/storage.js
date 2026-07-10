@@ -131,8 +131,15 @@
   function savePlan(plan) { write(K.plan, plan); }
   function clearPlan() { try { localStorage.removeItem(K.plan); } catch (e) {} }
 
-  /* ---- dispensa (ingredienti che ho sempre) ---- */
-  function getPantry() { return read(K.pantry, []); }
+  /* ---- dispensa (ingredienti base che ho sempre) ---- */
+  // solo veri immancabili: NON frutta/verdura/erbe fresche, NON spezie "particolari"
+  // (zafferano, curcuma, zenzero restano in lista)
+  var DEFAULT_PANTRY = ["olio", "sale", "pepe", "origano", "peperoncino", "paprika", "cannella", "cumino", "aceto", "lievito", "vaniglia"];
+  function getPantry() {
+    var p = read(K.pantry, null);
+    if (p === null) { p = DEFAULT_PANTRY.slice(); write(K.pantry, p); } // prima volta: metti i base
+    return p;
+  }
   function isPantry(word) { return getPantry().indexOf(word) >= 0; }
   function togglePantry(word) {
     var p = getPantry(), i = p.indexOf(word);

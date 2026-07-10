@@ -213,9 +213,17 @@
     return { grouped: grouped, order: CAT_ORDER, cat: CAT, total: total, hidden: hidden, people: plan.people || 2 };
   }
 
+  // unità "che si contano": si arrotondano all'intero (compri 1 limone, non 0,3)
+  var COUNT_UNITS = { "": 1, "cespo": 1, "cespi": 1, "ciuffo": 1, "ciuffi": 1, "manciata": 1, "manciate": 1,
+    "rametto": 1, "rametti": 1, "foglia": 1, "foglie": 1, "spicchio": 1, "spicchi": 1, "fetta": 1, "fette": 1,
+    "bustina": 1, "bustine": 1, "misurino": 1, "misurini": 1, "pizzico": 1, "pizzichi": 1, "mazzetto": 1 };
+  function fmtCount(n) { return String(Math.ceil(Math.round(n * 100) / 100)); }
   function itemLine(it) {
     var parts = [];
-    Object.keys(it.unitSums).forEach(function (u) { parts.push(fmtNum(it.unitSums[u]) + (u ? " " + u : "")); });
+    Object.keys(it.unitSums).forEach(function (u) {
+      var num = COUNT_UNITS[u.toLowerCase()] ? fmtCount(it.unitSums[u]) : fmtNum(it.unitSums[u]);
+      parts.push(u ? num + " " + u : num);
+    });
     (it.rawQtys || []).forEach(function (q) { parts.push(q); });
     var qty = parts.join(", ");
     if (qty) return it.name + " — " + qty;
