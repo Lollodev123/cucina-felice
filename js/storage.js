@@ -15,7 +15,8 @@
     fav: "lf_favorites",
     cooked: "lf_cooked_count",
     badges: "lf_badges",
-    checks: "lf_step_checks"
+    checks: "lf_step_checks",
+    plan: "lf_plan"
   };
 
   function read(key, fallback) {
@@ -123,6 +124,11 @@
     delete all[recipeId];
     write(K.checks, all);
   }
+
+  /* ---- piano della spesa ---- */
+  function getPlan() { return read(K.plan, null); }
+  function savePlan(plan) { write(K.plan, plan); }
+  function clearPlan() { try { localStorage.removeItem(K.plan); } catch (e) {} }
 
   /* ---- export / import ---- */
   function exportData() {
@@ -256,6 +262,7 @@
     isFavorite: isFavorite, toggleFavorite: toggleFavorite, getFavorites: getFavorites,
     getCooked: getCooked, addCooked: addCooked, BADGE_LEVELS: BADGE_LEVELS,
     getChecks: getChecks, toggleCheck: toggleCheck, clearChecks: clearChecks,
+    getPlan: getPlan, savePlan: savePlan, clearPlan: clearPlan,
     exportData: exportData, importData: importData,
     getAllRecipes: getAllRecipes, getVisibleRecipes: getVisibleRecipes,
     getRecipeById: getRecipeById, isSeedRecipe: isSeedRecipe, allIngredientKeys: allIngredientKeys,

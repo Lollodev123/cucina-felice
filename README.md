@@ -11,6 +11,7 @@ per chi non ama cucinare e si annoia in fretta.
 "Aggiungi a Home" per averla come **app installabile** (funziona anche offline).
 
 ## ✨ Cosa puoi fare
+- 🛒 **Pianifica la spesa**: scegli *settimana / 3 giorni / n. pasti* → ti propone i pasti (2/giorno, pescando tra Fit e Preferite) che puoi spuntare/cambiare → genera la **lista della spesa divisa per reparti**, con quantità, spuntabile mentre fai la spesa e con tasto **Copia**.
 - 🎲 **Sorprendimi**: ti sceglie una ricetta a caso (basta con la paralisi da scelta).
 - ⚡ **Filtri rapidi** sempre in vista: 🥤 Frullati, 🍪 Merende, Fit, Veloce, Mare, Comfort, Preferite.
 - 🥗 Tante ricette **fit/leggere** (cerca il tag "fit").
@@ -70,7 +71,8 @@ css/styles.css        # lo stile (colori, layout)
 js/storage.js         # salvataggi sul dispositivo (preferiti, foto, esclusioni…)
 js/filters.js         # ricerca, filtri, "Sorprendimi"
 js/timer.js           # timer dei passi
-js/form.js            # form "aggiungi ricetta" + export/import
+js/form.js            # form "aggiungi/modifica ricetta" + export/import
+js/planner.js         # pianificatore pasti + lista della spesa per reparti
 js/app.js             # cuore dell'app (navigazione, rendering)
 data/recipes.js       # i piatti principali (modificabile a mano)
 data/recipes-extra.js # frullatini + merende + piatti con patata dolce/quinoa/avocado/ceci

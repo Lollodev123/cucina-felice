@@ -412,6 +412,53 @@ img { max-width: 100%; display: block; }
 
 .disclaimer { font-size: 12.5px; color: var(--ink-soft); line-height: 1.5; margin-top: 10px; }
 
+/* ---------------- Pianificatore spesa ---------------- */
+.stepper {
+  display: inline-flex; align-items: center; gap: 12px;
+  background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+  padding: 8px 12px; box-shadow: var(--shadow);
+}
+.stepper span { font-weight: 700; font-size: 14px; }
+.stepper b { min-width: 30px; text-align: center; font-size: 16px; }
+.step-btn {
+  width: 34px; height: 34px; border-radius: 10px; background: var(--brand-grad);
+  color: #fff; font-size: 20px; font-weight: 900; line-height: 1; display: grid; place-items: center;
+}
+
+.plan-day { margin-bottom: 8px; }
+.plan-day__title { font-weight: 800; font-size: 15px; color: var(--brand-2); margin: 12px 0 8px; }
+.meal {
+  display: flex; align-items: center; gap: 10px; background: var(--card);
+  border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 8px 10px;
+  margin-bottom: 8px; box-shadow: var(--shadow); transition: opacity 0.15s ease;
+}
+.meal.off { opacity: 0.45; }
+.meal__check {
+  flex: none; width: 30px; height: 30px; border-radius: 9px; border: 2px solid var(--line);
+  background: #fff; color: #fff; font-weight: 900; font-size: 16px; display: grid; place-items: center;
+}
+.meal:not(.off) .meal__check { background: var(--verde); border-color: var(--verde); }
+.meal__body { flex: 1; display: flex; align-items: center; gap: 10px; background: none; text-align: left; padding: 0; min-width: 0; }
+.meal__emoji { font-size: 26px; flex: none; }
+.meal__title { font-weight: 700; font-size: 14px; line-height: 1.25; }
+.meal__swap {
+  flex: none; width: 38px; height: 38px; border-radius: 11px; background: #fff;
+  border: 1px solid var(--line); font-size: 17px; box-shadow: var(--shadow); transition: transform 0.15s ease;
+}
+.meal__swap:hover { transform: rotate(90deg); }
+
+.shop-cat { margin-bottom: 16px; }
+.shop-cat__title { font-weight: 800; font-size: 15px; margin: 0 0 6px; padding-bottom: 6px; border-bottom: 2px solid var(--line); }
+.shop-item { display: flex; align-items: center; gap: 10px; padding: 9px 6px; cursor: pointer; border-radius: 10px; }
+.shop-item:hover { background: var(--bg-soft); }
+.shop-item__check {
+  flex: none; width: 26px; height: 26px; border-radius: 8px; border: 2px solid var(--line);
+  background: #fff; color: #fff; font-weight: 900; display: grid; place-items: center;
+}
+.shop-item.done .shop-item__check { background: var(--verde); border-color: var(--verde); }
+.shop-item__text { font-size: 14.5px; font-weight: 600; }
+.shop-item.done .shop-item__text { text-decoration: line-through; color: var(--ink-soft); }
+
 /* ---------------- Animations ---------------- */
 @keyframes pop { 0% { transform: scale(0.6); opacity: 0; } 70% { transform: scale(1.08); } 100% { transform: scale(1); opacity: 1; } }
 @keyframes fade { from { opacity: 0; } to { opacity: 1; } }

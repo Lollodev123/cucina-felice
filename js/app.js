@@ -440,6 +440,201 @@
     });
   }
 
+  /* ---------------- pianificatore spesa ---------------- */
+  var planStep = "setup";
+  var planConfig = { mode: "week", customMeals: 6, snacksOn: false, snackCount: 3 };
+
+  function configTotal() {
+    return planConfig.mode === "week" ? 14 : planConfig.mode === "3days" ? 6 : planConfig.customMeals;
+  }
+
+  function pillBtn(active, label, attrs) {
+    return '<button class="qchip' + (active ? " active" : "") + '" ' + attrs + ">" + label + "</button>";
+  }
+  function stepper(label, act, value, unit) {
+    return '<div class="stepper"><span>' + label + "</span>" +
+      '<button class="step-btn" data-act="' + act + '-dec">−</button>' +
+      '<b>' + value + (unit ? " " + unit : "") + "</b>" +
+      '<button class="step-btn" data-act="' + act + '-inc">+</button></div>';
+  }
+
+  function plannerSetupHTML() {
+    var total = configTotal();
+    return '<div class="detail">' +
+      '<button class="back" data-plan-nav="home">← Home</button>' +
+      '<h1 style="margin:6px 0 2px">🛒 Pianifica la spesa</h1>' +
+      '<p style="color:var(--ink-soft);margin:0 0 14px">Scegli quanto, poi ti propongo i pasti (2 al giorno) e ti preparo la lista.</p>' +
+
+      '<div class="section-title">📆 Per quanto?</div>' +
+      '<div class="quickbar" style="overflow:visible;flex-wrap:wrap">' +
+        pillBtn(planConfig.mode === "week", "📅 Settimana (14 pasti)", 'data-mode="week"') +
+        pillBtn(planConfig.mode === "3days", "🗓️ 3 giorni (6 pasti)", 'data-mode="3days"') +
+        pillBtn(planConfig.mode === "meals", "✏️ Scegli n. pasti", 'data-mode="meals"') +
+      "</div>" +
+      (planConfig.mode === "meals" ? '<div style="margin-top:10px">' + stepper("Pasti totali", "meals", planConfig.customMeals, "") + "</div>" : "") +
+      '<p style="color:var(--ink-soft);font-size:13px;margin:8px 2px">= ' + total + " pasti, " + Math.ceil(total / 2) + " giorni.</p>" +
+
+      '<div class="section-title">🍪 Merende</div>' +
+      '<div class="quickbar" style="overflow:visible">' +
+        pillBtn(planConfig.snacksOn, (planConfig.snacksOn ? "✓ " : "") + "Aggiungi merende/frullati", 'data-act="snack-toggle"') +
+      "</div>" +
+      (planConfig.snacksOn ? '<div style="margin-top:10px">' + stepper("Quante merende", "snack", planConfig.snackCount, "") + "</div>" : "") +
+
+      '<button class="btn btn--primary btn--block btn--lg" data-act="generate" style="margin-top:20px">✨ Genera il piano</button>' +
+      "</div>";
+  }
+
+  function planMealCard(s, idx, which) {
+    var r = Store.getRecipeById(s.id) || { title: "(ricetta non disponibile)", emoji: "❓" };
+    return '<div class="meal' + (s.checked ? "" : " off") + '">' +
+      '<button class="meal__check" data-check="' + which + ":" + idx + '" title="Tieni nel piano">' + (s.checked ? "✓" : "") + "</button>" +
+      '<button class="meal__body" data-open="' + esc(s.id) + '">' +
+        '<span class="meal__emoji">' + (r.emoji || "🍽️") + "</span>" +
+        '<span class="meal__title">' + esc(r.title) + "</span>" +
+      "</button>" +
+      '<button class="meal__swap" data-swap="' + which + ":" + idx + '" title="Cambia ricetta">🔄</button>' +
+      "</div>";
+  }
+
+  function plannerPlanHTML(plan) {
+    var days = "";
+    for (var d = 0; d < plan.days; d++) {
+      days += '<div class="plan-day"><div class="plan-day__title">📅 Giorno ' + (d + 1) + "</div>";
+      for (var k = 0; k < plan.mealsPerDay; k++) {
+        var idx = d * plan.mealsPerDay + k;
+        if (plan.meals[idx]) days += planMealCard(plan.meals[idx], idx, "meal");
+      }
+      days += "</div>";
+    }
+    var snacks = "";
+    if (plan.snacksOn && plan.snacks.length) {
+      snacks = '<div class="section-title">🍪 Merende</div>' +
+        plan.snacks.map(function (s, i) { return planMealCard(s, i, "snack"); }).join("");
+    }
+    return '<div class="detail">' +
+      '<button class="back" data-plan-nav="home">← Home</button>' +
+      '<h1 style="margin:6px 0 2px">🗓️ Il tuo piano</h1>' +
+      '<p style="color:var(--ink-soft);margin:0 0 12px">' + plan.totalMeals + " pasti in " + plan.days + " giorni. Spunta ✓ quelli che tieni, 🔄 per cambiare.</p>" +
+      '<div class="final__row" style="justify-content:flex-start;margin-bottom:6px">' +
+        '<button class="btn" data-act="reshuffle">🎲 Rimescola tutto</button>' +
+        '<button class="btn btn--ghost" data-plan-nav="setup">↩︎ Cambia durata</button>' +
+      "</div>" +
+      days + snacks +
+      '<button class="btn btn--primary btn--block btn--lg" data-plan-nav="list" style="margin-top:18px">🛒 Fai la lista della spesa →</button>' +
+      "</div>";
+  }
+
+  function plannerListHTML(plan) {
+    var list = Planner.buildShoppingList(plan);
+    var checked = plan.listChecked || {};
+    var got = 0;
+    var body = list.order.map(function (c) {
+      var arr = list.grouped[c];
+      if (!arr.length) return "";
+      var rows = arr.map(function (it) {
+        var on = !!checked[it.key];
+        if (on) got++;
+        return '<div class="shop-item' + (on ? " done" : "") + '" data-item="' + esc(it.key) + '">' +
+          '<button class="shop-item__check">' + (on ? "✓" : "") + "</button>" +
+          '<span class="shop-item__text">' + esc(Planner.itemLine(it)) + "</span></div>";
+      }).join("");
+      return '<div class="shop-cat"><div class="shop-cat__title">' + list.cat[c].label + "</div>" + rows + "</div>";
+    }).join("");
+    return '<div class="detail">' +
+      '<button class="back" data-plan-nav="plan">← al piano</button>' +
+      '<div style="display:flex;align-items:center;gap:10px;margin:6px 0 2px">' +
+        '<h1 style="margin:0;flex:1">🛒 Lista della spesa</h1>' +
+        '<button class="btn btn--primary" data-act="copy">📋 Copia</button>' +
+      "</div>" +
+      '<p style="color:var(--ink-soft);margin:0 0 14px" id="shop-count">' + list.total + " cose · " + got + " prese</p>" +
+      body +
+      "</div>";
+  }
+
+  function renderPlanner() {
+    var plan = Store.getPlan();
+    if (!plan && planStep !== "setup") planStep = "setup";
+    if (planStep === "setup") els.view.innerHTML = plannerSetupHTML();
+    else if (planStep === "list") els.view.innerHTML = plannerListHTML(plan);
+    else els.view.innerHTML = plannerPlanHTML(plan);
+    wirePlanner();
+  }
+
+  function wirePlanner() {
+    var plan = Store.getPlan();
+    els.view.querySelectorAll("[data-plan-nav]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        var to = b.getAttribute("data-plan-nav");
+        if (to === "home") { location.hash = "#/"; return; }
+        planStep = to; renderPlanner(); window.scrollTo(0, 0);
+      });
+    });
+    // setup
+    els.view.querySelectorAll("[data-mode]").forEach(function (b) {
+      b.addEventListener("click", function () { planConfig.mode = b.getAttribute("data-mode"); renderPlanner(); });
+    });
+    els.view.querySelectorAll("[data-act]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        var act = b.getAttribute("data-act");
+        if (act === "meals-inc") planConfig.customMeals = Math.min(21, planConfig.customMeals + 1);
+        else if (act === "meals-dec") planConfig.customMeals = Math.max(2, planConfig.customMeals - 1);
+        else if (act === "snack-inc") planConfig.snackCount = Math.min(14, planConfig.snackCount + 1);
+        else if (act === "snack-dec") planConfig.snackCount = Math.max(1, planConfig.snackCount - 1);
+        else if (act === "snack-toggle") planConfig.snacksOn = !planConfig.snacksOn;
+        else if (act === "generate") {
+          var np = Planner.generate({ mode: planConfig.mode, totalMeals: configTotal(), snacksOn: planConfig.snacksOn, snackCount: planConfig.snackCount });
+          Store.savePlan(np); planStep = "plan"; renderPlanner(); window.scrollTo(0, 0); return;
+        }
+        else if (act === "reshuffle") { Store.savePlan(Planner.reshuffle(plan)); renderPlanner(); toast("Piano rimescolato 🎲"); return; }
+        else if (act === "copy") {
+          var txt = Planner.listAsText(plan);
+          if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(function () { toast("Lista copiata! 📋"); }, function () { toast("Copia non riuscita"); });
+          else toast("Copia non disponibile qui");
+          return;
+        }
+        if (planStep === "setup") renderPlanner();
+      });
+    });
+    // plan: check / swap / open
+    els.view.querySelectorAll("[data-check]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        var pr = b.getAttribute("data-check").split(":"), which = pr[0], idx = +pr[1];
+        var arr = which === "snack" ? plan.snacks : plan.meals;
+        arr[idx].checked = !arr[idx].checked;
+        Store.savePlan(plan); renderPlanner();
+      });
+    });
+    els.view.querySelectorAll("[data-swap]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        var pr = b.getAttribute("data-swap").split(":"), which = pr[0], idx = +pr[1];
+        Planner.swapMeal(plan, which, idx); Store.savePlan(plan); renderPlanner();
+      });
+    });
+    els.view.querySelectorAll("[data-open]").forEach(function (b) {
+      b.addEventListener("click", function () { location.hash = "#/r/" + b.getAttribute("data-open"); });
+    });
+    // list: check item
+    els.view.querySelectorAll("[data-item]").forEach(function (row) {
+      row.addEventListener("click", function () {
+        var key = row.getAttribute("data-item");
+        plan.listChecked = plan.listChecked || {};
+        plan.listChecked[key] = !plan.listChecked[key];
+        Store.savePlan(plan); renderPlanner();
+      });
+    });
+  }
+
+  function showPlanner() {
+    els.tools.style.display = "none";
+    els.filters.style.display = "none";
+    els.btnFilters.style.display = "none";
+    els.quickbar.style.display = "none";
+    if (!Store.getPlan()) planStep = "setup";
+    else if (planStep === "setup") planStep = "plan";
+    renderPlanner();
+    window.scrollTo(0, 0);
+  }
+
   /* ---------------- impostazioni ---------------- */
   function openSettings() {
     var bg = document.createElement("div");
@@ -538,6 +733,7 @@
     var h = location.hash || "#/";
     var m = h.match(/^#\/r\/(.+)$/);
     if (m) showDetail(decodeURIComponent(m[1]));
+    else if (h === "#/pianifica") showPlanner();
     else showHome();
   }
 
@@ -565,6 +761,7 @@
       else toast("Aggiungi qualche ricetta prima 🙂");
     });
     $("btn-add").addEventListener("click", openAdd);
+    $("btn-plan").addEventListener("click", function () { location.hash = "#/pianifica"; });
     $("btn-settings").addEventListener("click", openSettings);
     $("logo").addEventListener("click", function () { location.hash = "#/"; });
 
