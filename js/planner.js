@@ -249,6 +249,6 @@
     MEALS_PER_DAY: MEALS_PER_DAY,
     pools: pools, generate: generate, reshuffle: reshuffle, swapMeal: swapMeal,
     buildShoppingList: buildShoppingList, itemLine: itemLine, listAsText: listAsText,
-    categorize: categorize
+    categorize: categorize, parseQty: parseQty
   };
 })();
