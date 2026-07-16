@@ -6,7 +6,7 @@ Una piccola PWA in italiano per scegliere ricette low-FODMAP, pianificare i past
 
 ## Perché esiste
 
-La difficoltà non era soltanto trovare piatti adatti, ma decidere cosa cucinare durante la settimana e riunire ingredienti ripetuti senza riscrivere ogni volta la lista. L'app è nata per un uso domestico reale e conserva dati, preferenze e foto sul dispositivo.
+La difficoltà non era soltanto trovare piatti adatti e semplici, ma decidere cosa cucinare durante la settimana e riunire ingredienti ripetuti senza riscrivere ogni volta la lista. L'app è nata per un uso domestico reale personale e conserva dati, preferenze e foto sul dispositivo.
 
 ## Cosa fa
 
